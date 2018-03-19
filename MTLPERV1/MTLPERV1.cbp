@@ -24,6 +24,7 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add directory="include" />
+					<Add directory="../MTLPERV1" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />

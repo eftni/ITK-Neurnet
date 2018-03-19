@@ -23,17 +23,17 @@ class Dataset
     protected:
 
     private:
-        uint32_t magic_im; //!< Member variable "magic_im"
-        uint32_t magic_lab; //!< Member variable "magic_lab"
-        uint32_t num_im; //!< Member variable "num_im"
-        uint32_t num_lab; //!< Member variable "num_lab"
-        uint32_t sizex; //!< Member variable "sizex"
-        uint32_t sizey; //!< Member variable "sizey"
-        int index; //!< Member variable "index"
-        std::ifstream fin_im; //!< Member variable "fin_im"
-        std::ifstream fin_lab; //!< Member variable "fin_lab"
-        std::vector<std::vector<uint8_t>> curr_im; //!< Member variable "curr_im"
-        uint8_t curr_label; //!< Member variable "curr_label"
+        uint32_t magic_im; //!< Unique identifier of the image file
+        uint32_t magic_lab; //!< Unique identifier of the label file
+        uint32_t num_im; //!< Number of images in file
+        uint32_t num_lab; //!< Number of labels in file
+        uint32_t sizex; //!< Size of images along the x axis
+        uint32_t sizey; //!< Size of images along the y axis
+        int index; //!< Number of current image
+        std::ifstream fin_im; //!< Image filestream
+        std::ifstream fin_lab; //!< Label filestream
+        std::vector<std::vector<uint8_t>> curr_im; //!< Current image in matrix form
+        uint8_t curr_label; //!< Current label
 };
 
 #endif // DATASET_H
