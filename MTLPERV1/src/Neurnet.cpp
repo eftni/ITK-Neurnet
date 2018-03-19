@@ -64,7 +64,7 @@ std::vector<std::vector<double>> Neurnet::forprop(std::vector<std::vector<uint8_
 ///SUM DELTA*WEIGHTS FUNCTIONS
 
 std::vector<std::vector<double>> Neurnet::calc_deltas(std::vector<double> target, std::vector<std::vector<double>> outputs){
-    std::vector<std::vector<double>> deltas(layers.size(), std::vector<double>(1,0));
+    std::vector<std::vector<double>> deltas(outputs.size(), std::vector<double>(1,0));
     for(int i = outputs.size()-1; i >= 0; --i){
         if(i == outputs.size()-1){
             std::vector<double> layer_deltas(outputs[i].size(), 0);
@@ -90,15 +90,15 @@ std::vector<std::vector<double>> Neurnet::calc_deltas(std::vector<double> target
 void Neurnet::backprop(std::vector<double> target, std::vector<std::vector<double>> outputs){
     //double total_error = calc_error(target, output);
     std::vector<std::vector<std::vector<double>>> weights_update(weights);
-    std::vector<std::vector<double>> deltas = calc_deltas(target, output);
+    std::vector<std::vector<double>> deltas = calc_deltas(target, outputs);
     for(int z = 0; z < weights.size(); ++z){
         for(int y = 0; y < weights[z].size(); ++y){
-            for(int x = 0; x < weights[x][y].size(); ++x){
-                weights_update -= learning_rate*
+            for(int x = 0; x < weights[z][y].size(); ++x){
+                weights_update[z][y][x] -= learning_rate*outputs[z][y]*deltas[z+1][x];
             }
         }
     }
-
+    weights = weights_update;
 }
 
 /*std::ostream& Neurnet::operator<<(std::ostream& out){

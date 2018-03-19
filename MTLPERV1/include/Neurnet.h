@@ -14,9 +14,9 @@ class Neurnet
         virtual ~Neurnet();
 
         std::vector<std::random_device::result_type> get_seed(){return randgen_seeds;}
-        std::vector<double> forprop(std::vector<std::vector<uint8_t>> image);
-        void backprop(std::vector<double> target, std::vector<double> output);
-        std::vector<std::vector<double>> calc_deltas(std::vector<double> target, std::vector<std::vector<double>> outputs)
+        std::vector<std::vector<double>> forprop(std::vector<std::vector<uint8_t>> image);
+        void backprop(std::vector<double> target, std::vector<std::vector<double>> output);
+        std::vector<std::vector<double>> calc_deltas(std::vector<double> target, std::vector<std::vector<double>> outputs);
         //std::ostream& operator<<(std::ostream& out);
     protected:
 
