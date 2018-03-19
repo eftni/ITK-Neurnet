@@ -1,6 +1,6 @@
 #include "Dataset.h"
 
-Dataset::Dataset(std::string fname_im, std::string fname_lab) : fin_im(fname_im, std::ifstream::binary), fin_lab(fname_lab, std::ifstream::binary), index(0)
+Dataset::Dataset(const std::string fname_im, const std::string fname_lab) : fin_im(fname_im, std::ifstream::binary), fin_lab(fname_lab, std::ifstream::binary), index(0)
 {
     if(!fin_im.good() || !fin_lab.good()){
         std::cout << "Error: Can't find files" << std::endl;
@@ -39,8 +39,8 @@ Dataset::~Dataset()
 void Dataset::load_one(){
     ++index;
     std::vector<std::vector<uint8_t>> temp(sizey, std::vector<uint8_t>(sizex, 0));
-    for(int y = 0; y < sizey; ++y){
-        for(int x = 0; x < sizex; ++x){
+    for(size_t y = 0; y < sizey; ++y){
+        for(size_t x = 0; x < sizex; ++x){
             uint8_t c = 0;
             fin_im.read(reinterpret_cast<char *>(&c), sizeof(c));
             temp[x][y] = c;

@@ -9,8 +9,8 @@ using namespace std;
 
 int main()
 {
-    Dataset training("C:\\Users\\Niko\\Desktop\\Neurnet\\Training Data\\train-images.idx3-ubyte", "C:\\Users\\Niko\\Desktop\\Neurnet\\Training Data\\train-labels.idx1-ubyte");
-    Dataset testing("C:\\Users\\Niko\\Desktop\\Neurnet\\Training Data\\t10k-images.idx3-ubyte", "C:\\Users\\Niko\\Desktop\\Neurnet\\Training Data\\t10k-labels.idx1-ubyte");
+    Dataset training(".\\Data\\train-images.idx3-ubyte", ".\\Data\\train-labels.idx1-ubyte");
+    Dataset testing(".\\Data\\t10k-images.idx3-ubyte", ".\\Data\\t10k-labels.idx1-ubyte");
     std::vector<int> layers;
     layers.push_back(784);
     layers.push_back(16);

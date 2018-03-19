@@ -3,6 +3,7 @@
 #include "iostream"
 #include "functional"
 #include "matrixmath.h"
+#include "time.h"
 
 void warmup(std::function<double()>& randgen){
     for(int i = 0; i <= 100000; ++i){
@@ -11,9 +12,11 @@ void warmup(std::function<double()>& randgen){
 }
 
 std::function<double()> get_randgen(std::vector<std::random_device::result_type>& seeds){
-    std::random_device r;
+    srand(time(nullptr));
+    //std::random_device r;
     for(int i = 0; i <= 7; ++i){    ///RANDOM DEVICE IMPLEMENTED INCORRECTLY: USE BOOST
-        seeds[i] = r();
+        //seeds[i] = r();
+        seeds[i] = rand();
         //std::cout << seeds[i] << std::endl;
     }
     std::seed_seq s{seeds[0],seeds[1],seeds[2],seeds[3],seeds[4],seeds[5],seeds[6],seeds[7]};
@@ -31,10 +34,10 @@ randgen_seeds(8, 0),
 weights(layer_count.size()-1, std::vector<std::vector<double>>(1, std::vector<double>(1,0)))
 {
     std::function<double()> randgen = get_randgen(randgen_seeds);
-    for(int z = 0; z < layer_count.size()-1; ++z){
+    for(size_t z = 0; z < layer_count.size()-1; ++z){
         weights[z] = std::vector<std::vector<double>>(layer_count[z+1], std::vector<double>(layer_count[z],0));
-        for(int y = 0; y <weights[z].size(); ++y){
-            for(int x = 0; x < weights[z][y].size(); ++x){      ///x is the current layer, y is the previous one
+        for(size_t y = 0; y <weights[z].size(); ++y){
+            for(size_t x = 0; x < weights[z][y].size(); ++x){      ///x is the current layer, y is the previous one
                 weights[z][y][x] = randgen();
                 //std::cout << randgen() << std::endl;
             }
@@ -65,18 +68,18 @@ std::vector<std::vector<double>> Neurnet::forprop(std::vector<std::vector<uint8_
 
 std::vector<std::vector<double>> Neurnet::calc_deltas(std::vector<double> target, std::vector<std::vector<double>> outputs){
     std::vector<std::vector<double>> deltas(outputs.size(), std::vector<double>(1,0));
-    for(int i = outputs.size()-1; i >= 0; --i){
+    for(size_t i = outputs.size()-1; i >= 0; --i){
         if(i == outputs.size()-1){
             std::vector<double> layer_deltas(outputs[i].size(), 0);
-            for(int j = 0; j < outputs[i].size(); ++j){     ///WATCH THE NEGATIVE SIGN
+            for(size_t j = 0; j < outputs[i].size(); ++j){     ///WATCH THE NEGATIVE SIGN
                 layer_deltas[j] = -(target[j]-outputs[i][j])*act_func_derivative(outputs[i][j]);
             }
             deltas[i] = layer_deltas;
         }else{
             std::vector<double> layer_deltas(outputs[i].size(), 0);
-            for(int j = 0; j < outputs[i].size(); ++j){
+            for(size_t j = 0; j < outputs[i].size(); ++j){
                 double sumdelta = 0;
-                for(int k = 0; k < weights[i][j].size(); ++k){
+                for(size_t k = 0; k < weights[i][j].size(); ++k){
                     sumdelta += deltas[i+1][k]*weights[i][j][k];    ///CHECK INDEXING
                 }
                 layer_deltas[j] = sumdelta*act_func_derivative(outputs[i][j]);
@@ -91,9 +94,9 @@ void Neurnet::backprop(std::vector<double> target, std::vector<std::vector<doubl
     //double total_error = calc_error(target, output);
     std::vector<std::vector<std::vector<double>>> weights_update(weights);
     std::vector<std::vector<double>> deltas = calc_deltas(target, outputs);
-    for(int z = 0; z < weights.size(); ++z){
-        for(int y = 0; y < weights[z].size(); ++y){
-            for(int x = 0; x < weights[z][y].size(); ++x){
+    for(size_t z = 0; z < weights.size(); ++z){
+        for(size_t y = 0; y < weights[z].size(); ++y){
+            for(size_t x = 0; x < weights[z][y].size(); ++x){
                 weights_update[z][y][x] -= learning_rate*outputs[z][y]*deltas[z+1][x];
             }
         }
