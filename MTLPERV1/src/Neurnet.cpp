@@ -2,8 +2,10 @@
 #include "random"
 #include "iostream"
 #include "functional"
-#include "matrixmath.h"
+#include "..\\matrixmath.h"
 #include "time.h"
+#include "stdio.h"
+#include "math.h"
 
 void warmup(std::function<double()>& randgen){
     for(int i = 0; i <= 100000; ++i){
@@ -12,6 +14,7 @@ void warmup(std::function<double()>& randgen){
 }
 
 std::function<double()> get_randgen(std::vector<std::random_device::result_type>& seeds){
+    std::cout << "Creating random generator" << std::endl;
     srand(time(nullptr));
     //std::random_device r;
     for(int i = 0; i <= 7; ++i){    ///RANDOM DEVICE IMPLEMENTED INCORRECTLY: USE BOOST
@@ -35,6 +38,7 @@ weights(layer_count.size()-1, std::vector<std::vector<double>>(1, std::vector<do
 logfile("Log001.txt")
 {
     std::function<double()> randgen = get_randgen(randgen_seeds);
+    std::cout << "Generating weights" << std::endl;
     for(size_t z = 0; z < layer_count.size()-1; ++z){
         weights[z] = std::vector<std::vector<double>>(layer_count[z+1], std::vector<double>(layer_count[z],0));
         for(size_t y = 0; y <weights[z].size(); ++y){
@@ -44,6 +48,7 @@ logfile("Log001.txt")
             }
         }
     }
+    std::cout << "Weights generated: Starting training" << std::endl;
 }
 
 Neurnet::~Neurnet()
@@ -69,7 +74,7 @@ std::vector<std::vector<double>> Neurnet::forprop(std::vector<std::vector<uint8_
 
 std::vector<std::vector<double>> Neurnet::calc_deltas(std::vector<double> target, std::vector<std::vector<double>> outputs){
     std::vector<std::vector<double>> deltas(outputs.size(), std::vector<double>(1,0));
-    for(size_t i = outputs.size()-1; i >= 0; --i){
+    for(int i = outputs.size()-1; i >= 0; --i){
         if(i == outputs.size()-1){
             std::vector<double> layer_deltas(outputs[i].size(), 0);
             for(size_t j = 0; j < outputs[i].size(); ++j){     ///WATCH THE NEGATIVE SIGN
@@ -78,10 +83,16 @@ std::vector<std::vector<double>> Neurnet::calc_deltas(std::vector<double> target
             deltas[i] = layer_deltas;
         }else{
             std::vector<double> layer_deltas(outputs[i].size(), 0);
-            for(size_t j = 0; j < outputs[i].size(); ++j){
+            for(size_t j = 0; j < weights[i].size(); ++j){
                 double sumdelta = 0;
                 for(size_t k = 0; k < weights[i][j].size(); ++k){
-                    sumdelta += deltas[i+1][k]*weights[i][j][k];    ///CHECK INDEXING
+                if(std::isnan(deltas[i+1][k])){
+                    std::cout << "A" << std::endl;  ///16 errors at deltas[1][0]
+                }
+                if(std::isnan(weights[i][j][k])){
+                    std::cout << "B" << std::endl;
+                }
+                    sumdelta += deltas[i+1][k]*weights[i][j][k];    ///CHECK INDEXING - DELTAS INCORRECT
                 }
                 layer_deltas[j] = sumdelta*act_func_derivative(outputs[i][j]);
             }
@@ -139,8 +150,19 @@ void Neurnet::single_pass(uint8_t label, std::vector<std::vector<uint8_t>> image
     }
 }
 
+std::ostream& operator<<(std::ostream& out, std::vector<std::vector<double>> mat){
+    for(std::vector<double> v : mat){
+        for(double d : v){
+            std::cout << d << ' ';      ///DEBUG FUNCTION
+        }
+        std::cout << std::endl;
+    }
+    return out;
+}
+
 double Neurnet::train_pass(uint8_t label, std::vector<std::vector<uint8_t>> image){
     std::vector<std::vector<double>> outputs = forprop(image);
+    std::cout << weights[1] << std::endl;
     backprop(gen_target(10, label), outputs);
     return calc_total_error(label, outputs.back());
 }
@@ -149,6 +171,10 @@ void Neurnet::train_net(Dataset& training){
     logfile << "------------Training error values------------" << std::endl;
     while(training.check_over()){
         double err_tot = train_pass(training.get_label(), training.get_im());
+        if(training.get_index()%1 == 0){
+            std::cout << training.get_index() << '/' << 60000 << std::endl;
+            std::cout << "Total error:" << err_tot << std::endl;
+        }
         logfile << err_tot << std::endl;
         ///MINIBATCH
         training.load_one();

@@ -161,14 +161,19 @@
 1521636870 source:c:\users\niko\desktop\prog\neurnet\mtlperv1\src\dataset.cpp
 	"Dataset.h"
 
-1521637148 source:c:\users\niko\desktop\prog\neurnet\mtlperv1\src\neurnet.cpp
+1521644226 source:c:\users\niko\desktop\prog\neurnet\mtlperv1\src\neurnet.cpp
 	"Neurnet.h"
 	"random"
 	"iostream"
 	"functional"
-	"matrixmath.h"
+	"..\\matrixmath.h"
 	"time.h"
+	"stdio.h"
+	"math.h"
 
 1521635340 c:\users\niko\desktop\prog\neurnet\mtlperv1\matrixmath.h
+	"math.h"
+
+1521635340 c:\users\niko\desktop\prog\neurnet\mtlperv1\\matrixmath.h
 	"math.h"
 
