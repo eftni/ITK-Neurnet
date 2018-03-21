@@ -31,7 +31,8 @@ learning_rate(learnrate),
 act_func(activator),
 act_func_derivative(derivative),
 randgen_seeds(8, 0),
-weights(layer_count.size()-1, std::vector<std::vector<double>>(1, std::vector<double>(1,0)))
+weights(layer_count.size()-1, std::vector<std::vector<double>>(1, std::vector<double>(1,0))),
+logfile("Log001.txt")
 {
     std::function<double()> randgen = get_randgen(randgen_seeds);
     for(size_t z = 0; z < layer_count.size()-1; ++z){
@@ -102,6 +103,67 @@ void Neurnet::backprop(std::vector<double> target, std::vector<std::vector<doubl
         }
     }
     weights = weights_update;
+}
+
+bool out_check(uint8_t target, std::vector<double> actual){
+    size_t top = 0;
+    double maxi = 0;
+    for(size_t i = 0; i < actual.size(); ++i){
+        if(actual[i]>maxi){
+            maxi = actual[i];
+            top = i;
+        }
+    }
+    if(target == top){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+double calc_total_error(uint8_t target, std::vector<double> actual){
+    std::vector<double> t = gen_target(10, target);
+    double err_tot = 0;
+    for(size_t i = 0; i < actual.size(); ++i){
+        err_tot += (pow(t[i]-actual[i],2))/2;
+    }
+    return err_tot;
+}
+
+void Neurnet::single_pass(uint8_t label, std::vector<std::vector<uint8_t>> image){
+    std::vector<std::vector<double>> outputs = forprop(image);
+    if(out_check(label, outputs.back())){
+        ++hit;
+    }else{
+        ++miss;
+    }
+}
+
+double Neurnet::train_pass(uint8_t label, std::vector<std::vector<uint8_t>> image){
+    std::vector<std::vector<double>> outputs = forprop(image);
+    backprop(gen_target(10, label), outputs);
+    return calc_total_error(label, outputs.back());
+}
+
+void Neurnet::train_net(Dataset& training){
+    logfile << "------------Training error values------------" << std::endl;
+    while(training.check_over()){
+        double err_tot = train_pass(training.get_label(), training.get_im());
+        logfile << err_tot << std::endl;
+        ///MINIBATCH
+        training.load_one();
+    }
+}
+
+void Neurnet::test_net(Dataset& testing){
+    logfile << "------------Testing hit rate------------" << std::endl;
+    while(testing.check_over()){
+        train_pass(testing.get_label(), testing.get_im());
+        testing.load_one();
+    }
+    logfile << "hit: " << hit << " miss: " << miss << std::endl;
+    logfile << "ratio: " << (double)hit/(double) miss << std::endl;
+    logfile.close();
 }
 
 /*std::ostream& Neurnet::operator<<(std::ostream& out){

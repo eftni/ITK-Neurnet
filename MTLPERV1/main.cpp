@@ -16,8 +16,12 @@ int main()
     layers.push_back(16);
     layers.push_back(16);
     layers.push_back(10);
-    //Neurnet net(layers, 1, [](double x ){return 1/(1+exp(-x));}, [](double x ){return (1/(1+exp(-x))) * (1 - 1/(1+exp(-x)));});
     Neurnet net(layers, 1, [](double x ){return 1/(1+exp(-x));}, [](double x ){return x*(1-x);}); ///Derivative with respect to output
+    net.train_net(training);
+    net.test_net(testing);
+
+
+    //Neurnet net(layers, 1, [](double x ){return 1/(1+exp(-x));}, [](double x ){return (1/(1+exp(-x))) * (1 - 1/(1+exp(-x)));});
     /*std::vector<std::random_device::result_type> seed = net.get_seed();
     std::cout << std::endl;
     for(int i = 0; i <= 7; ++i){

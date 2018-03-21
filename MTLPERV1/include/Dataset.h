@@ -11,13 +11,17 @@ class Dataset
 {
     public:
         /** Default constructor */
+        ///WRITE DEFAULT CTOR
         Dataset(const std::string fname_im, const std::string fname_lab);
         /** Default destructor */
         virtual ~Dataset();
+
         void load_one();
         std::pair<uint32_t, uint32_t> get_size();
         std::vector<std::vector<uint8_t>> get_im(){return curr_im;}
         uint8_t get_label(){return curr_label;}
+        bool check_over();
+        size_t get_index(){return index;}
 
 
     protected:
@@ -31,7 +35,7 @@ class Dataset
         uint32_t num_lab; //!< Number of labels in file
         uint32_t sizex; //!< Size of images along the x axis
         uint32_t sizey; //!< Size of images along the y axis
-        int index; //!< Number of current image
+        size_t index; //!< Number of current image
         std::vector<std::vector<uint8_t>> curr_im; //!< Current image in matrix form
         uint8_t curr_label; //!< Current label
 };

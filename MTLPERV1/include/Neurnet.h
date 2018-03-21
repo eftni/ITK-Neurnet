@@ -4,6 +4,7 @@
 #include "functional"
 #include "random"
 #include "iostream"
+#include "Dataset.h"
 
 //std::ostream& operator<<(std::ostream& out){};
 
@@ -17,15 +18,23 @@ class Neurnet
         std::vector<std::vector<double>> forprop(std::vector<std::vector<uint8_t>> image);
         void backprop(std::vector<double> target, std::vector<std::vector<double>> output);
         std::vector<std::vector<double>> calc_deltas(std::vector<double> target, std::vector<std::vector<double>> outputs);
+        void single_pass(uint8_t label, std::vector<std::vector<uint8_t>> image);
+        double train_pass(uint8_t label, std::vector<std::vector<uint8_t>> image);
+        void train_net(Dataset& training);
+        void test_net(Dataset& testing);
+
         //std::ostream& operator<<(std::ostream& out);
     protected:
 
     private:
         double learning_rate; //!< Coefficient for weight adjustment "eta"
-        std::vector<std::vector<std::vector<double>>> weights; //!< Weights between neurons
         std::function<double(double)> act_func; //!< Neuron activation function (usually sigmoid)
         std::function<double(double)> act_func_derivative; //!< Derivative of neuron activation function
         std::vector<std::random_device::result_type> randgen_seeds; //!< Seeds used in mersenne twister for reproducibility
+        std::vector<std::vector<std::vector<double>>> weights; //!< Weights between neurons
+        unsigned int hit = 0;
+        unsigned int miss = 0;
+        std::ofstream logfile;
 };
 
 #endif // NEURNET_H

@@ -1,6 +1,9 @@
 #include "Dataset.h"
 
-Dataset::Dataset(const std::string fname_im, const std::string fname_lab) : fin_im(fname_im, std::ifstream::binary), fin_lab(fname_lab, std::ifstream::binary), index(0)
+Dataset::Dataset(const std::string fname_im, const std::string fname_lab) :
+fin_im(fname_im, std::ifstream::binary),
+fin_lab(fname_lab, std::ifstream::binary),
+index(0)
 {
     if(!fin_im.good() || !fin_lab.good()){
         std::cout << "Error: Can't find files" << std::endl;
@@ -54,4 +57,12 @@ void Dataset::load_one(){
 
 std::pair<uint32_t, uint32_t> Dataset::get_size(){
     return std::make_pair(sizex, sizey);
+}
+
+bool Dataset::check_over(){
+    if(index < num_im){
+        return true;
+    }else{
+        return false;
+    }
 }

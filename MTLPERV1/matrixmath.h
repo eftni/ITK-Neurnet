@@ -34,7 +34,7 @@ inline void activate(std::vector<double>& input, std::function<double(double)> a
     }
 }
 
-std::vector<double> gen_targer(int vect_size, int label){
+std::vector<double> gen_target(int vect_size, int label){
     std::vector<double> temp(vect_size, 0);
     temp[label] = 1;        ///ADJUST FOR ACTIVATOR FUNCTION
     return temp;
