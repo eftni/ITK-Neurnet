@@ -151,17 +151,17 @@
 	"stdlib.h"
 	"iostream"
 
-1521637164 c:\users\niko\desktop\prog\neurnet\mtlperv1\include\neurnet.h
+1521715117 c:\users\niko\desktop\prog\neurnet\mtlperv1\include\neurnet.h
 	"vector"
 	"functional"
 	"random"
 	"iostream"
 	"Dataset.h"
 
-1521636870 source:c:\users\niko\desktop\prog\neurnet\mtlperv1\src\dataset.cpp
+1521801742 source:c:\users\niko\desktop\prog\neurnet\mtlperv1\src\dataset.cpp
 	"Dataset.h"
 
-1521644226 source:c:\users\niko\desktop\prog\neurnet\mtlperv1\src\neurnet.cpp
+1521801755 source:c:\users\niko\desktop\prog\neurnet\mtlperv1\src\neurnet.cpp
 	"Neurnet.h"
 	"random"
 	"iostream"
@@ -174,6 +174,6 @@
 1521635340 c:\users\niko\desktop\prog\neurnet\mtlperv1\matrixmath.h
 	"math.h"
 
-1521635340 c:\users\niko\desktop\prog\neurnet\mtlperv1\\matrixmath.h
+1521800783 c:\users\niko\desktop\prog\neurnet\mtlperv1\\matrixmath.h
 	"math.h"
 

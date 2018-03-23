@@ -40,7 +40,8 @@ logfile("Log001.txt")
     std::function<double()> randgen = get_randgen(randgen_seeds);
     std::cout << "Generating weights" << std::endl;
     for(size_t z = 0; z < layer_count.size()-1; ++z){
-        weights[z] = std::vector<std::vector<double>>(layer_count[z+1], std::vector<double>(layer_count[z],0));
+        //weights[z] = std::vector<std::vector<double>>(layer_count[z+1], std::vector<double>(layer_count[z],0));
+        weights[z] = std::vector<std::vector<double>>(layer_count[z], std::vector<double>(layer_count[z+1],0));
         for(size_t y = 0; y <weights[z].size(); ++y){
             for(size_t x = 0; x < weights[z][y].size(); ++x){      ///x is the current layer, y is the previous one
                 weights[z][y][x] = randgen();
@@ -57,6 +58,15 @@ Neurnet::~Neurnet()
 }
 
 
+/*template<typename T>
+std::ostream& operator<<(std::ostream& out, std::vector<T> v){
+    for(T t : v){
+        out << t << ' ';
+    }
+    out << std::endl;
+    return out;
+}*/
+
 std::vector<std::vector<double>> Neurnet::forprop(std::vector<std::vector<uint8_t>> image){
     std::vector<double> temp = mat_to_row(image);
     std::vector<std::vector<double>> outputs;
@@ -69,8 +79,6 @@ std::vector<std::vector<double>> Neurnet::forprop(std::vector<std::vector<uint8_
     }
     return outputs;
 }
-
-///SUM DELTA*WEIGHTS FUNCTIONS
 
 std::vector<std::vector<double>> Neurnet::calc_deltas(std::vector<double> target, std::vector<std::vector<double>> outputs){
     std::vector<std::vector<double>> deltas(outputs.size(), std::vector<double>(1,0));
@@ -86,13 +94,7 @@ std::vector<std::vector<double>> Neurnet::calc_deltas(std::vector<double> target
             for(size_t j = 0; j < weights[i].size(); ++j){
                 double sumdelta = 0;
                 for(size_t k = 0; k < weights[i][j].size(); ++k){
-                if(std::isnan(deltas[i+1][k])){
-                    std::cout << "A" << std::endl;  ///16 errors at deltas[1][0]
-                }
-                if(std::isnan(weights[i][j][k])){
-                    std::cout << "B" << std::endl;
-                }
-                    sumdelta += deltas[i+1][k]*weights[i][j][k];    ///CHECK INDEXING - DELTAS INCORRECT
+                    sumdelta += deltas[i+1][k]*weights[i][j][k];    ///--------CHECK INDEXING - DELTAS NaN - FIXED?
                 }
                 layer_deltas[j] = sumdelta*act_func_derivative(outputs[i][j]);
             }
@@ -150,7 +152,7 @@ void Neurnet::single_pass(uint8_t label, std::vector<std::vector<uint8_t>> image
     }
 }
 
-std::ostream& operator<<(std::ostream& out, std::vector<std::vector<double>> mat){
+/*std::ostream& operator<<(std::ostream& out, std::vector<std::vector<double>> mat){
     for(std::vector<double> v : mat){
         for(double d : v){
             std::cout << d << ' ';      ///DEBUG FUNCTION
@@ -158,11 +160,10 @@ std::ostream& operator<<(std::ostream& out, std::vector<std::vector<double>> mat
         std::cout << std::endl;
     }
     return out;
-}
+}*/
 
 double Neurnet::train_pass(uint8_t label, std::vector<std::vector<uint8_t>> image){
     std::vector<std::vector<double>> outputs = forprop(image);
-    std::cout << weights[1] << std::endl;
     backprop(gen_target(10, label), outputs);
     return calc_total_error(label, outputs.back());
 }
@@ -171,7 +172,7 @@ void Neurnet::train_net(Dataset& training){
     logfile << "------------Training error values------------" << std::endl;
     while(training.check_over()){
         double err_tot = train_pass(training.get_label(), training.get_im());
-        if(training.get_index()%1 == 0){
+        if(training.get_index()%500 == 0){
             std::cout << training.get_index() << '/' << 60000 << std::endl;
             std::cout << "Total error:" << err_tot << std::endl;
         }
@@ -185,6 +186,9 @@ void Neurnet::test_net(Dataset& testing){
     logfile << "------------Testing hit rate------------" << std::endl;
     while(testing.check_over()){
         train_pass(testing.get_label(), testing.get_im());
+        if(testing.get_index()%500 == 0){
+            std::cout << testing.get_index() << '/' << 10000 << std::endl;
+        }
         testing.load_one();
     }
     logfile << "hit: " << hit << " miss: " << miss << std::endl;
