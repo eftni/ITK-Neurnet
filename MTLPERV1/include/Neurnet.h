@@ -6,8 +6,6 @@
 #include "iostream"
 #include "Dataset.h"
 
-//std::ostream& operator<<(std::ostream& out){};
-
 class Neurnet
 {
     public:

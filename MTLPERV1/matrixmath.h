@@ -12,7 +12,7 @@ std::vector<double> mat_to_row(std::vector<std::vector<uint8_t>> mat){
     return temp;
 }
 
-std::vector<double> matrix_mult(std::vector<double> out, std::vector<std::vector<double>> weights){
+/*std::vector<double> matrix_mult(std::vector<double> out, std::vector<std::vector<double>> weights){
     if(weights[0].size() != out.size()){
         std::cout << "MATRIXMULT ERROR: Matrix sizes don't match" << std::endl;
         exit(1);
@@ -22,6 +22,22 @@ std::vector<double> matrix_mult(std::vector<double> out, std::vector<std::vector
         for(size_t inner_mat = 0; inner_mat < weights[outer].size(); ++inner_mat){
             for(size_t inner_out = 0; inner_out < out.size(); ++inner_out){
                 temp[outer] = weights[outer][inner_mat] * out[inner_out];
+            }
+        }
+    }
+    return temp;
+}*/
+
+std::vector<double> matrix_mult(std::vector<double> out, std::vector<std::vector<double>> weights){
+    if(weights.size() != out.size()){
+        std::cout << "MATRIXMULT ERROR: Matrix sizes don't match" << std::endl;
+        exit(1);
+    }
+    std::vector<double> temp(weights[0].size(), 0);
+    for(size_t outer = 0; outer < weights[0].size(); ++outer){
+        for(size_t inner_mat = 0; inner_mat < weights.size(); ++inner_mat){  ///REVIEW INDEXING - URGENT!!!
+            for(size_t inner_out = 0; inner_out < out.size(); ++inner_out){
+                temp[outer] = weights[inner_mat][outer] * out[inner_out];
             }
         }
     }

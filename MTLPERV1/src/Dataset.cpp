@@ -31,7 +31,7 @@ index(0)
         exit(1);
     }
     load_one();
-    index = 0;
+    index = 1;
 }
 
 Dataset::~Dataset()
