@@ -9,16 +9,17 @@
 class Neurnet
 {
     public:
+        Neurnet();
         Neurnet(std::vector<int> layer_count, double learnrate, std::function<double(double)> activator, std::function<double(double)> derivative);
         virtual ~Neurnet();
 
         std::vector<std::random_device::result_type> get_seed(){return randgen_seeds;}
         std::vector<std::vector<double>> forprop(std::vector<std::vector<uint8_t>> image);
-        void backprop(std::vector<double> target, std::vector<std::vector<double>> output);
+        void backprop(std::vector<double> target, std::vector<std::vector<double>> output,std::vector<std::vector<std::vector<double>>>& weights_update);
         std::vector<std::vector<double>> calc_deltas(std::vector<double> target, std::vector<std::vector<double>> outputs);
         void single_pass(uint8_t label, std::vector<std::vector<uint8_t>> image);
-        double train_pass(uint8_t label, std::vector<std::vector<uint8_t>> image);
-        void train_net(Dataset& training);
+        double train_pass(uint8_t label, std::vector<std::vector<uint8_t>> image, std::vector<std::vector<std::vector<double>>>& weights_update);
+        void train_net(Dataset& training, int batchsize);
         void test_net(Dataset& testing);
 
         //std::ostream& operator<<(std::ostream& out);
@@ -30,9 +31,9 @@ class Neurnet
         std::function<double(double)> act_func_derivative; //!< Derivative of neuron activation function
         std::vector<std::random_device::result_type> randgen_seeds; //!< Seeds used in mersenne twister for reproducibility
         std::vector<std::vector<std::vector<double>>> weights; //!< Weights between neurons
-        unsigned int hit = 0;
-        unsigned int miss = 0;
-        std::ofstream logfile;
+        unsigned int hit; //!< Number of pictures guessed correctly
+        unsigned int miss; //!< Number of pictures guessed incorrectly
+        std::ofstream logfile; //!< Logfile for training and testng
 };
 
 #endif // NEURNET_H

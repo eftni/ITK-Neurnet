@@ -56,6 +56,37 @@ std::vector<double> gen_target(int vect_size, int label){
     return temp;
 }
 
+void setvalue(std::vector<std::vector<std::vector<double>>>& mat, double val){  ///PRIMITIVE - REPLACE ASAP
+    for(std::vector<std::vector<double>>& vv : mat){
+        for(std::vector<double>& v : vv){
+            for(double& d : v){
+                d = val;
+            }
+        }
+    }
+}
+
+void operator-=(std::vector<std::vector<std::vector<double>>>& w, std::vector<std::vector<std::vector<double>>> update){ ///PRIMITIVE - REPLACE ASAP
+    for(size_t i = 0; i < w.size(); ++i){
+        for(size_t j = 0; j < w[i].size(); ++j){
+            for(size_t k = 0; k < w[i][j].size(); ++k){
+                w[i][j][k] -= update[i][j][k];
+            }
+        }
+    }
+}
+
+std::vector<std::vector<std::vector<double>>> operator/(std::vector<std::vector<std::vector<double>>>& w, double d){ ///PRIMITIVE - REPLACE ASAP
+    for(size_t i = 0; i < w.size(); ++i){
+        for(size_t j = 0; j < w[i].size(); ++j){
+            for(size_t k = 0; k < w[i][j].size(); ++k){
+                w[i][j][k] = w[i][j][k]/d;
+            }
+        }
+    }
+    return w;
+}
+
 /*double calc_error(std::vector<double> target, std::vector<double> output){
     if(target.size() != output.size()){
         std::cout << "E-SIGNAL CALCULATION ERROR: target and output sizes don't match";

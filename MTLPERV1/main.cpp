@@ -17,7 +17,7 @@ int main()
     layers.push_back(16);
     layers.push_back(10);
     Neurnet net(layers, 1, [](double x ){return 1/(1+exp(-x));}, [](double x ){return x*(1-x);}); ///Derivative with respect to output
-    net.train_net(training);
+    net.train_net(training, 100);
     net.test_net(testing);
 
 

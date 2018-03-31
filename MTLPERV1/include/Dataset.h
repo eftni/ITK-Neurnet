@@ -11,7 +11,7 @@ class Dataset
 {
     public:
         /** Default constructor */
-        ///WRITE DEFAULT CTOR
+        Dataset();
         Dataset(const std::string fname_im, const std::string fname_lab);
         /** Default destructor */
         virtual ~Dataset();

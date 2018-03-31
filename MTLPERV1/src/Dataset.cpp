@@ -1,5 +1,9 @@
 #include "Dataset.h"
 
+Dataset::Dataset(){
+
+}
+
 Dataset::Dataset(const std::string fname_im, const std::string fname_lab) :
 fin_im(fname_im, std::ifstream::binary),
 fin_lab(fname_lab, std::ifstream::binary),
@@ -60,7 +64,7 @@ std::pair<uint32_t, uint32_t> Dataset::get_size(){
 }
 
 bool Dataset::check_over(){
-    if(index < num_im){
+    if(index <= num_im){ ///CHECK
         return true;
     }else{
         return false;
