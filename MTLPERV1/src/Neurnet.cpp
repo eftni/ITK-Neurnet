@@ -6,6 +6,8 @@
 #include "time.h"
 #include "stdio.h"
 #include "math.h"
+#include "fstream"
+#include "sstream"
 
 Neurnet::Neurnet(){
 
@@ -63,14 +65,14 @@ Neurnet::~Neurnet()
     //dtor
 }
 
-template<typename T>
+/*template<typename T>
 std::ostream& operator<< (std::ostream& out, std::vector<T> v){
     for(T t : v){
         out << t << ' ';
     }
     out << std::endl;
     return out;
-}
+}*/
 
 std::vector<std::vector<double>> Neurnet::forprop(std::vector<std::vector<uint8_t>> image){
     std::vector<double> temp = mat_to_row(image);
@@ -180,16 +182,39 @@ double Neurnet::train_pass(uint8_t label, std::vector<std::vector<uint8_t>> imag
     return calc_total_error(label, outputs.back());
 }
 
+std::ostream& operator<<(std::ostream& out, std::vector<std::vector<std::vector<double>>> w){
+    for(std::vector<std::vector<double>> vv : w){
+        for(std::vector<double> v : vv){
+            for(double d : v){
+                out << d << ' ';
+            }
+            out << std::endl;
+        }
+        out << ';' << std::endl;
+    }
+    return out;
+}
+
 void Neurnet::train_net(Dataset& training, int batchsize){
     std::vector<std::vector<std::vector<double>>> weights_update(weights);
     setvalue(weights_update,0);
-    std::cout << weights[2] << std::endl;
     logfile << "------------Training error values------------" << std::endl;
+    int index = 0;
     while(training.check_over()){
         double err_tot = train_pass(training.get_label(), training.get_im(), weights_update);
+
+        if(training.get_index()%100 == 0){
+            std::stringstream ss;
+            ss << index;
+            std::string fname = "w_mat" + ss.str() + ".txt";
+            std::ofstream fout(fname);
+            fout << weights;
+            fout.close();
+            ++index;
+        }
+
         if(training.get_index()%batchsize == 0){
             weights -= weights_update/batchsize;
-            std::cout << weights[2] << std::endl;
             setvalue(weights_update, 0);
             std::cout << training.get_index() << '/' << 60000 << std::endl;
             std::cout << "Total error:" << err_tot << std::endl;
@@ -209,7 +234,10 @@ void Neurnet::test_net(Dataset& testing){
         }
         testing.load_one();
     }
+    std::cout << "hit: " << hit << " miss: " << miss << std::endl;
+    std::cout << "ratio: " << (double)hit/(double) miss << std::endl;
     logfile << "hit: " << hit << " miss: " << miss << std::endl;
     logfile << "ratio: " << (double)hit/(double) miss << std::endl;
     logfile.close();
 }
+
