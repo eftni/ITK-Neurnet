@@ -39,6 +39,7 @@ Neurnet::Neurnet(std::vector<Layer> layers, double learnrate) :
 learning_rate(learnrate),
 randgen_seeds(8, 0),
 weights(layers.size()-1, std::vector<std::vector<double>>(1, std::vector<double>(1,0))),
+biases(layers.size(), std::vector<double>(1,0)),
 n_layers(layers),
 hit(0),
 miss(0),
@@ -56,6 +57,12 @@ logfile("Log001.txt")
             }
         }
     }
+    for(size_t i = 0; i < layers.size(); ++i){
+        biases[i] = std::vector<double>(layers[i].n_number, 0);
+        for(size_t j = 0; j < layers[i].n_number; ++j){
+            biases[i][j] = randgen();
+        }
+    }
     std::cout << "Weights generated: Starting training" << std::endl;
 }
 
@@ -67,10 +74,13 @@ Neurnet::~Neurnet()
 std::vector<std::vector<double>> Neurnet::forprop(std::vector<std::vector<uint8_t>> image){
     std::vector<double> temp = mat_to_row(image);
     std::vector<std::vector<double>> outputs;
+    temp = temp/255; ///Input normalization
+    //temp += biases[0];
     activate(temp, n_layers[0].activator);
     outputs.push_back(temp);
     for(size_t i = 0; i < weights.size(); ++i){
         temp = matrix_mult(temp, weights[i]);
+        //temp += biases[i+1];
         activate(temp, n_layers[i+1].activator);
         outputs.push_back(temp);
     }
@@ -113,6 +123,11 @@ void Neurnet::backprop(std::vector<double> target, std::vector<std::vector<doubl
             }
         }
     }
+    for(size_t i = 0; i < biases.size(); ++i){
+        for(size_t j = 0; j < biases[i].size(); ++j){
+            biases[i][j] -= learning_rate*deltas[i][j];
+        }
+    }
 }
 
 bool out_check(uint8_t target, std::vector<double> actual){
@@ -153,7 +168,12 @@ void Neurnet::single_pass(uint8_t label, std::vector<std::vector<uint8_t>> image
 
 double Neurnet::train_pass(uint8_t label, std::vector<std::vector<uint8_t>> image, std::vector<std::vector<std::vector<double>>>& weights_update){
     std::vector<std::vector<double>> outputs = forprop(image);
-    backprop(gen_target(10, label), outputs, weights_update);
+    std::vector<double> target = gen_target(10, label);
+    backprop(target, outputs, weights_update);
+    for(size_t i = 0; i < outputs.back().size(); ++i){
+        logfile << outputs.back()[i] << ' ' << target[i] << ' ' << (pow(target[i]-outputs.back()[i],2))/2 << std::endl;
+    }
+    logfile << "--------" << std::endl;
     return calc_total_error(label, outputs.back());
 }
 
@@ -175,9 +195,10 @@ void Neurnet::train_net(Dataset& training, int batchsize){
     setvalue(weights_update,0);
     logfile << "------------Training error values------------" << std::endl;
     int index = 0;
+    double err_tot_sum = 0;
     while(training.check_over()){
         double err_tot = train_pass(training.get_label(), training.get_im(), weights_update);
-
+        err_tot_sum += err_tot;
         if(training.get_index()%100 == 0){
             std::stringstream ss;
             ss << index;
@@ -192,9 +213,10 @@ void Neurnet::train_net(Dataset& training, int batchsize){
             weights -= weights_update/batchsize;
             setvalue(weights_update, 0);
             std::cout << training.get_index() << '/' << 60000 << std::endl;
-            std::cout << "Total error:" << err_tot << std::endl;
+            std::cout << "Total error:" << err_tot_sum/batchsize << std::endl;
+            err_tot_sum = 0;
         }
-        logfile << err_tot << std::endl;
+        //logfile << err_tot << std::endl;
         ///MINIBATCH
         training.load_one();
     }

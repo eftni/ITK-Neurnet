@@ -66,6 +66,12 @@ void setvalue(std::vector<std::vector<std::vector<double>>>& mat, double val){  
     }
 }
 
+void operator+=(std::vector<double>& outputs, const std::vector<double>& biases){ ///PRIMITIVE - REPLACE ASAP
+    for(size_t i = 0; i < outputs.size(); ++i){
+        outputs[i] += biases[i];
+    }
+}
+
 void operator-=(std::vector<std::vector<std::vector<double>>>& w, const std::vector<std::vector<std::vector<double>>>& update){ ///PRIMITIVE - REPLACE ASAP
     for(size_t i = 0; i < w.size(); ++i){
         for(size_t j = 0; j < w[i].size(); ++j){
@@ -74,6 +80,13 @@ void operator-=(std::vector<std::vector<std::vector<double>>>& w, const std::vec
             }
         }
     }
+}
+
+std::vector<double> operator/(std::vector<double> v, double d){ ///PRIMITIVE - REPLACE ASAP
+    for(size_t i = 0; i < v.size(); ++i){
+        v[i] = v[i]/d;
+    }
+    return v;
 }
 
 std::vector<std::vector<std::vector<double>>> operator/(std::vector<std::vector<std::vector<double>>>& w, double d){ ///PRIMITIVE - REPLACE ASAP
