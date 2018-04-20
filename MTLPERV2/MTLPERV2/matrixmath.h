@@ -28,7 +28,7 @@ std::vector<double> mat_to_row(std::vector<std::vector<uint8_t>> mat){
     return temp;
 }*/
 
-std::vector<double> matrix_mult(std::vector<double> out, std::vector<std::vector<double>> weights){
+/*std::vector<double> matrix_mult(std::vector<double> out, std::vector<std::vector<double>> weights){
     if(weights.size() != out.size()){
         std::cout << "MATRIXMULT ERROR: Matrix sizes don't match" << std::endl;
         exit(1);
@@ -42,7 +42,22 @@ std::vector<double> matrix_mult(std::vector<double> out, std::vector<std::vector
         }
     }
     return temp;
+}*/
+
+std::vector<double> matrix_mult(std::vector<double> out, std::vector<std::vector<double>> weights){
+    if(weights.size() != out.size()){
+        std::cout << "MATRIXMULT ERROR: Matrix sizes don't match" << std::endl;
+        exit(1);
+    }
+    std::vector<double> result(weights[0].size(), 0);
+    for(size_t i = 0; i < result.size(); ++i){
+        for(size_t j = 0; j < out.size(); ++j){
+            result[i] += weights[j][i] * out[j];
+        }
+    }
+    return result;
 }
+
 
 inline void activate(std::vector<double>& input, std::function<double(double)> activator){
     for(double& d : input){
