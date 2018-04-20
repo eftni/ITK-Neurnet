@@ -19,7 +19,7 @@
 1524138351 c:\users\niko\desktop\prog\neurnet\mtlperv2\mtlperv2\include\layer.h
 	"functional"
 
-1524139890 source:c:\users\niko\desktop\prog\neurnet\mtlperv2\mtlperv2\main.cpp
+1524220071 source:c:\users\niko\desktop\prog\neurnet\mtlperv2\mtlperv2\main.cpp
 	<iostream>
 	"Dataset.h"
 	"Neurnet.h"
@@ -36,7 +36,7 @@
 	"Dataset.h"
 	"Layer.h"
 
-1524141334 source:c:\users\niko\desktop\prog\neurnet\mtlperv2\mtlperv2\src\neurnet.cpp
+1524142655 source:c:\users\niko\desktop\prog\neurnet\mtlperv2\mtlperv2\src\neurnet.cpp
 	"Neurnet.h"
 	"random"
 	"iostream"
@@ -48,6 +48,6 @@
 	"fstream"
 	"sstream"
 
-1524139834 c:\users\niko\desktop\prog\neurnet\mtlperv2\mtlperv2\\matrixmath.h
+1524220071 c:\users\niko\desktop\prog\neurnet\mtlperv2\mtlperv2\\matrixmath.h
 	"math.h"
 
