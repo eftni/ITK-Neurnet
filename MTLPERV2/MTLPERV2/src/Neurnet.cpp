@@ -71,20 +71,39 @@ Neurnet::~Neurnet()
     //dtor
 }
 
+std::ostream& operator<< (std::ostream& out, std::vector<double> inputs){
+    for(size_t i = 0; i < inputs.size(); ++i){
+        out << inputs[i] << ' ' << tanh(inputs[i]) << std::endl;
+    }
+    return out;
+}
+
+std::ostream& operator<< (std::ostream& out, std::vector<std::vector<double>> outputs){
+    for(size_t i = 0; i < outputs.size(); ++i){
+        for(size_t j = 0; j < outputs[i].size(); ++j){
+            out << outputs[i][j] << ' ';
+        }
+        out << std::endl;
+    }
+    return out;
+}
+
 std::vector<std::vector<double>> Neurnet::forprop(std::vector<std::vector<uint8_t>> image){
     std::vector<double> temp = mat_to_row(image);
     std::vector<std::vector<double>> outputs;
     temp = temp/255; ///Input normalization
     //temp += biases[0];
+    std::cout << temp;
     activate(temp, n_layers[0].activator);
     outputs.push_back(temp);
     for(size_t i = 0; i < weights.size(); ++i){
         temp = matrix_mult(temp, weights[i]);
+        std::cout << temp;
         //temp += biases[i+1];
         activate(temp, n_layers[i+1].activator);
         outputs.push_back(temp);
     }
-    //std::cout << outputs;
+    std::cout << "---------" << std::endl;
     return outputs;
 }
 
