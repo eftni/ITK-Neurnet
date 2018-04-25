@@ -48,12 +48,10 @@ logfile("Log001.txt")
     std::function<double()> randgen = get_randgen(randgen_seeds);
     std::cout << "Generating weights" << std::endl;
     for(size_t z = 0; z < layers.size()-1; ++z){
-        //weights[z] = std::vector<std::vector<double>>(layer_count[z+1], std::vector<double>(layer_count[z],0));
         weights[z] = std::vector<std::vector<double>>(layers[z].n_number, std::vector<double>(layers[z+1].n_number,0));
         for(size_t y = 0; y <weights[z].size(); ++y){
             for(size_t x = 0; x < weights[z][y].size(); ++x){      ///x is the current layer, y is the previous one
                 weights[z][y][x] = randgen();
-                //std::cout << randgen() << std::endl;
             }
         }
     }
@@ -93,17 +91,14 @@ std::vector<std::vector<double>> Neurnet::forprop(std::vector<std::vector<uint8_
     std::vector<std::vector<double>> outputs;
     temp = temp/255; ///Input normalization
     //temp += biases[0];
-    //std::cout << temp;
     activate(temp, n_layers[0].activator);
     outputs.push_back(temp);
     for(size_t i = 0; i < weights.size(); ++i){
         temp = matrix_mult(temp, weights[i]);
-        //std::cout << temp;
         //temp += biases[i+1];
         activate(temp, n_layers[i+1].activator);
         outputs.push_back(temp);
     }
-    //std::cout << "---------" << std::endl;
     return outputs;
 }
 

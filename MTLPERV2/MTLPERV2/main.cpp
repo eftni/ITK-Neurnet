@@ -10,8 +10,6 @@ using namespace std;
 
 int main()
 {
-    //Dataset training(".\\Data\\train-images.idx3-ubyte", ".\\Data\\train-labels.idx1-ubyte");
-    //Dataset testing(".\\Data\\t10k-images.idx3-ubyte", ".\\Data\\t10k-labels.idx1-ubyte");
     std::vector<Layer> layers;
     //layers.push_back(Layer(784, [](double x){return x;}, [](double x){return 1;}, 1));
     //layers.push_back(Layer(784, [](double x){return 1/(1+exp(-x));}, [](double x){return x*(1-x);}, 0));
