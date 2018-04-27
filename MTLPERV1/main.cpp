@@ -16,8 +16,9 @@ int main()
     layers.push_back(16);
     layers.push_back(16);
     layers.push_back(10);
-    Neurnet net(layers, 1, [](double x ){return 1/(1+exp(-x));}, [](double x ){return x*(1-x);}); ///Derivative with respect to output
-    net.train_net(training, 100);
+    //Neurnet net(layers, 1, [](double x ){return 1/(1+exp(-x));}, [](double x ){return x*(1-x);}); ///Derivative with respect to output
+    Neurnet net(layers, 1, [](double x){return tanh(x);}, [](double x){return 1-pow(x,2);}); ///Tanh - Zero centered act funcion (Derivative with respect to output)
+    net.train_net(training, 1000);
     net.test_net(testing);
 
 
