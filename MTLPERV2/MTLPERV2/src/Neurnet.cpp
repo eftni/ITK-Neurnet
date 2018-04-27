@@ -23,10 +23,12 @@ std::function<double()> get_randgen(std::vector<std::random_device::result_type>
     std::cout << "Creating random generator" << std::endl;
     srand(time(nullptr));
     //std::random_device r;
-    for(int i = 0; i <= 7; ++i){    ///RANDOM DEVICE IMPLEMENTED INCORRECTLY: USE BOOST
-        //seeds[i] = r();
-        seeds[i] = rand();
-        //std::cout << seeds[i] << std::endl;
+    if(seeds == std::vector<std::random_device::result_type>(8,0)){
+        for(int i = 0; i <= 7; ++i){    ///RANDOM DEVICE IMPLEMENTED INCORRECTLY: USE BOOST
+            //seeds[i] = r();
+            seeds[i] = rand();
+            //std::cout << seeds[i] << std::endl;
+        }
     }
     std::seed_seq s{seeds[0],seeds[1],seeds[2],seeds[3],seeds[4],seeds[5],seeds[6],seeds[7]};
     std::function<double()> randgen1 = std::bind(std::uniform_real_distribution<double>(-1,1), std::mt19937(s));
@@ -35,9 +37,9 @@ std::function<double()> get_randgen(std::vector<std::random_device::result_type>
 }
 
 
-Neurnet::Neurnet(std::vector<Layer> layers, double learnrate) :
+Neurnet::Neurnet(std::vector<Layer> layers, double learnrate, std::vector<std::random_device::result_type> rs) :
 learning_rate(learnrate),
-randgen_seeds(8, 0),
+randgen_seeds(rs),
 weights(layers.size()-1, std::vector<std::vector<double>>(1, std::vector<double>(1,0))),
 biases(layers.size(), std::vector<double>(1,0)),
 n_layers(layers),
@@ -226,10 +228,39 @@ void Neurnet::train_net(Dataset& training, int batchsize){
             std::cout << "Total error:" << err_tot_sum/batchsize << std::endl;
             err_tot_sum = 0;
         }
-        //logfile << err_tot << std::endl;
         ///MINIBATCH
         training.load_one();
     }
+}
+
+void Neurnet::write_to_master(){
+    std::ofstream master("master.txt");
+    master << "-------Current best network:-------" << std::endl;
+    master << "Percentage: " << ((double)hit/10000)*100 << std::endl;
+    master << "Hit: " << hit << " Miss: " << miss << std::endl;
+    master << "-------Network settings:-------" << std::endl;
+    master << "Seeds:" << std::endl;
+    for(std::random_device::result_type s : randgen_seeds){
+        master << s << std::endl;
+    }
+    master << "Layers:" << std::endl;
+    master << n_layers.size() << std::endl;
+    for(Layer l : n_layers){
+        master << l.n_number << '\t'; ///Cannot handle act functions yet
+    }
+    master << learning_rate << std::endl;
+    master << n_layers.size() << std::endl;
+    master << weights;
+    master.close();
+}
+
+double read_master_best(){
+    std::ifstream fin("master.txt");
+    std::string s;
+    std::getline(fin, s);
+    std::getline(fin, s, ' ');
+    std::getline(fin, s);
+    return atof(s.c_str());
 }
 
 void Neurnet::test_net(Dataset& testing){
@@ -243,6 +274,10 @@ void Neurnet::test_net(Dataset& testing){
     }
     std::cout << "hit: " << hit << " miss: " << miss << std::endl;
     std::cout << "ratio: " << ((double)hit/10000)*100 << '%' << std::endl;
+    double best = read_master_best();
+    if(((double)hit/10000)*100 > best){
+        write_to_master();
+    }
     logfile << "hit: " << hit << " miss: " << miss << std::endl;
     logfile << "ratio: " << ((double)hit/10000)*100 << '%' << std::endl;
     logfile.close();

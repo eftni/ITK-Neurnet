@@ -6,8 +6,6 @@
 #include "math.h"
 #include "Layer.h"
 
-using namespace std;
-
 int main()
 {
     std::vector<Layer> layers;
@@ -19,8 +17,8 @@ int main()
     layers.push_back(Layer(16, [](double x){return tanh(x);}, [](double x){return 1-pow(x,2);}, 0));
     layers.push_back(Layer(16, [](double x){return tanh(x);}, [](double x){return 1-pow(x,2);}, 0));
     layers.push_back(Layer(10, [](double x){return tanh(x);}, [](double x){return 1-pow(x,2);}, 0));
-    Neurnet net(layers, 1);
-    int epochs = 1;
+    Neurnet net(layers, 0.3);
+    int epochs = 5;
     for(int i = 0; i < epochs; ++i){
         std::cout << "Epoch: " << i << std::endl;
         Dataset training(".\\Data\\train-images.idx3-ubyte", ".\\Data\\train-labels.idx1-ubyte");
@@ -28,5 +26,13 @@ int main()
     }
     Dataset testing(".\\Data\\t10k-images.idx3-ubyte", ".\\Data\\t10k-labels.idx1-ubyte");
     net.test_net(testing);
+
+    /*while(true){
+        Neurnet net(layers, 1);
+        Dataset training(".\\Data\\train-images.idx3-ubyte", ".\\Data\\train-labels.idx1-ubyte");
+        net.train_net(training, 1000);
+        Dataset testing(".\\Data\\t10k-images.idx3-ubyte", ".\\Data\\t10k-labels.idx1-ubyte");
+        net.test_net(testing);
+    }*/
     return 0;
 }

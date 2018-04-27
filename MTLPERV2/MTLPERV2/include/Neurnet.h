@@ -11,7 +11,7 @@ class Neurnet
 {
     public:
         Neurnet();
-        Neurnet(std::vector<Layer> layers, double learnrate);
+        Neurnet(std::vector<Layer> layers, double learnrate, std::vector<std::random_device::result_type> rs = {0,0,0,0,0,0,0,0});
         virtual ~Neurnet();
 
         std::vector<std::random_device::result_type> get_seed(){return randgen_seeds;}
@@ -21,6 +21,7 @@ class Neurnet
         void single_pass(uint8_t label, std::vector<std::vector<uint8_t>> image);
         double train_pass(uint8_t label, std::vector<std::vector<uint8_t>> image, std::vector<std::vector<std::vector<double>>>& weights_update);
         void train_net(Dataset& training, int batchsize);
+        void write_to_master();
         void test_net(Dataset& testing);
 
         //std::ostream& operator<<(std::ostream& out);
