@@ -30,8 +30,8 @@ class Neurnet
         double learning_rate; //!< Coefficient for weight adjustment "eta"
         std::vector<std::random_device::result_type> randgen_seeds; //!< Seeds used in mersenne twister for reproducibility
         std::vector<std::vector<std::vector<double>>> weights; //!< Weights between neurons
-        std::vector<std::vector<double>> biases;
-        std::vector<Layer> n_layers;
+        std::vector<std::vector<double>> biases; //!< Biases of individual neurons
+        std::vector<Layer> n_layers; //!< Layers with activation functions
         unsigned int hit; //!< Number of pictures guessed correctly
         unsigned int miss; //!< Number of pictures guessed incorrectly
         std::ofstream logfile; //!< Logfile for training and testing

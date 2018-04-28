@@ -26,7 +26,6 @@ std::function<double()> get_randgen(std::vector<std::random_device::result_type>
     for(int i = 0; i <= 7; ++i){    ///RANDOM DEVICE IMPLEMENTED INCORRECTLY: USE BOOST
         //seeds[i] = r();
         seeds[i] = rand();
-        //std::cout << seeds[i] << std::endl;
     }
     std::seed_seq s{seeds[0],seeds[1],seeds[2],seeds[3],seeds[4],seeds[5],seeds[6],seeds[7]};
     std::function<double()> randgen1 = std::bind(std::uniform_real_distribution<double>(-1,1), std::mt19937(s));
@@ -48,12 +47,10 @@ logfile("Log001.txt")
     std::function<double()> randgen = get_randgen(randgen_seeds);
     std::cout << "Generating weights" << std::endl;
     for(size_t z = 0; z < layers.size()-1; ++z){
-        //weights[z] = std::vector<std::vector<double>>(layer_count[z+1], std::vector<double>(layer_count[z],0));
         weights[z] = std::vector<std::vector<double>>(layers[z].n_number, std::vector<double>(layers[z+1].n_number,0));
         for(size_t y = 0; y <weights[z].size(); ++y){
             for(size_t x = 0; x < weights[z][y].size(); ++x){      ///x is the current layer, y is the previous one
                 weights[z][y][x] = randgen();
-                //std::cout << randgen() << std::endl;
             }
         }
     }
@@ -93,17 +90,14 @@ std::vector<std::vector<double>> Neurnet::forprop(std::vector<std::vector<uint8_
     std::vector<std::vector<double>> outputs;
     temp = temp/255; ///Input normalization
     //temp += biases[0];
-    std::cout << temp;
     activate(temp, n_layers[0].activator);
     outputs.push_back(temp);
     for(size_t i = 0; i < weights.size(); ++i){
         temp = matrix_mult(temp, weights[i]);
-        std::cout << temp;
         //temp += biases[i+1];
         activate(temp, n_layers[i+1].activator);
         outputs.push_back(temp);
     }
-    std::cout << "---------" << std::endl;
     return outputs;
 }
 
@@ -136,9 +130,7 @@ void Neurnet::backprop(std::vector<double> target, std::vector<std::vector<doubl
     for(size_t z = 0; z < weights.size(); ++z){
         for(size_t y = 0; y < weights[z].size(); ++y){
             for(size_t x = 0; x < weights[z][y].size(); ++x){
-                //std::cout << weights_update[z][y][x] << ' ' << learning_rate*outputs[z][y]*deltas[z+1][x] << std::endl;
-                weights_update[z][y][x] += learning_rate*outputs[z][y]*deltas[z+1][x];      ///REWRITE FOR MATRIXMATH
-                //std::cout << outputs[z][y] << " " << deltas[z+1][x] << std::endl;   ///OUTPUTS?
+                weights_update[z][y][x] += learning_rate*outputs[z][y]*deltas[z+1][x];
             }
         }
     }
@@ -170,9 +162,7 @@ double calc_total_error(uint8_t target, std::vector<double> actual){
     double err_tot = 0;
     for(size_t i = 0; i < actual.size(); ++i){
         err_tot += (pow(t[i]-actual[i],2))/2;
-        //std::cout << t[i] << ' ' << actual[i] << ' ' << (pow(t[i]-actual[i],2))/2 << std::endl;
     }
-    //std::cout << "-----" << std::endl;
     return err_tot;
 }
 
@@ -235,8 +225,6 @@ void Neurnet::train_net(Dataset& training, int batchsize){
             std::cout << "Total error:" << err_tot_sum/batchsize << std::endl;
             err_tot_sum = 0;
         }
-        //logfile << err_tot << std::endl;
-        ///MINIBATCH
         training.load_one();
     }
 }
@@ -251,9 +239,9 @@ void Neurnet::test_net(Dataset& testing){
         testing.load_one();
     }
     std::cout << "hit: " << hit << " miss: " << miss << std::endl;
-    std::cout << "ratio: " << (double)hit/(double) miss << std::endl;
+    std::cout << "ratio: " << ((double)hit/10000)*100 << '%' << std::endl;
     logfile << "hit: " << hit << " miss: " << miss << std::endl;
-    logfile << "ratio: " << (double)hit/(double) miss << std::endl;
+    logfile << "ratio: " << ((double)hit/10000)*100 << '%' << std::endl;
     logfile.close();
 }
 
