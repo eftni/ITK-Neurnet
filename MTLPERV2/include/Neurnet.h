@@ -14,14 +14,67 @@ class Neurnet
         Neurnet(std::vector<Layer> layers, double learnrate, std::vector<std::random_device::result_type> rs = {0,0,0,0,0,0,0,0});
         virtual ~Neurnet();
 
+        /**
+        * Returns the seeds used by the random generator for reproducibility
+        * @return Array of 8 seeds
+        */
         std::vector<std::random_device::result_type> get_seed(){return randgen_seeds;}
+
+        /**
+        * Performs forward propoagation on the currently loaded image.
+        * @param image The current image
+        * @return The outputs of every neuron
+        */
         std::vector<std::vector<double>> forprop(std::vector<std::vector<uint8_t>> image);
+
+        /**
+        * Performs backpropagation training using a set of outputs from a forward pass
+        * @param target The expected output on the final layer. Genrated by gen_target() in matrixmath.h
+        * @param output The outputs of every neuron in the network
+        * @param weights_update The total sum of weight updates in a batch. (Required due to batch implementation)
+        */
         void backprop(std::vector<double> target, std::vector<std::vector<double>> output,std::vector<std::vector<std::vector<double>>>& weights_update);
+
+        /**
+        * Calculates the deltas (neuron-output-independent components of a weight update) for every neuron
+        * @param target The expected output on the final layer. Genrated by gen_target() in matrixmath.h
+        * @param outputs The outputs of every neuron in the network
+        * @return The deltas of every neuron in the network
+        */
         std::vector<std::vector<double>> calc_deltas(std::vector<double> target, std::vector<std::vector<double>> outputs);
+
+        /**
+        * Performs a single forward propagation and check if the output is correct
+        * @param label The number the current image represents
+        * @param image The currently loaded image
+        */
         void single_pass(uint8_t label, std::vector<std::vector<uint8_t>> image);
+
+        /**
+        * Performs a single forward propagation and trains the network based on the output
+        * @param label The number the current image represents
+        * @param image The currently loaded image
+        * @param weights_update The total sum of weight updates in a batch. (Required due to batch implementation)
+        * @return The total error value of the output
+        */
         double train_pass(uint8_t label, std::vector<std::vector<uint8_t>> image, std::vector<std::vector<std::vector<double>>>& weights_update);
+
+        /**
+        * Trains the network using one entire dataset
+        * @param training The dataset containing the training images and labels
+        * @param batchsize The number of images to be processed and averaged before an update
+        */
         void train_net(Dataset& training, int batchsize);
+
+        /**
+        * Writes the properties of the network to the master file.
+        */
         void write_to_master();
+
+        /**
+        * Test the network's performance using one entire dataset
+        * @param testing The dataset containing the testing images and labels
+        */
         void test_net(Dataset& testing);
 
         //std::ostream& operator<<(std::ostream& out);

@@ -13,12 +13,23 @@ Neurnet::Neurnet(){
 
 }
 
+/**
+* Warms up the Mersenne Twister by producing 100000 random numbers
+* @param randgen A callable random generator
+*/
 void warmup(std::function<double()>& randgen){
     for(int i = 0; i <= 100000; ++i){
         randgen();
     }
 }
 
+/**
+* Initializes the random generator used for assigning random weights and biases at the start of training.
+* (The random generator is a Mersenne Twister using a seed sequence of 8 seeds and bound to a
+* a uniform distrbution functor.)
+* @param seeds A set of seeds to be used by the generator
+* @return A callable object which generates random numbers of a uniform distribution.
+*/
 std::function<double()> get_randgen(std::vector<std::random_device::result_type>& seeds){
     std::cout << "Creating random generator" << std::endl;
     srand(time(nullptr));
@@ -144,6 +155,12 @@ void Neurnet::backprop(std::vector<double> target, std::vector<std::vector<doubl
     }
 }
 
+/**
+* Checks if the output of a forward pass corresponds to the expected output.
+* @param target The expected output
+* @param actual The output of a forward pass
+* @return True if the output matches the target, false otherwise
+*/
 bool out_check(uint8_t target, std::vector<double> actual){
     size_t top = 0;
     double maxi = 0;
@@ -160,6 +177,13 @@ bool out_check(uint8_t target, std::vector<double> actual){
     }
 }
 
+/**
+* Calculates the squared total error of a forward pass.
+* (The error is halved to simplify derivation)
+* @param target The expected output
+* @param actual The output of a forward pass
+* @return The total error.
+*/
 double calc_total_error(uint8_t target, std::vector<double> actual){
     std::vector<double> t = gen_target(10, target);
     double err_tot = 0;
@@ -254,6 +278,9 @@ void Neurnet::write_to_master(){
     master.close();
 }
 
+/**
+* Reads how well the current best network performed
+*/
 double read_master_best(){
     std::ifstream fin("master.txt");
     std::string s;

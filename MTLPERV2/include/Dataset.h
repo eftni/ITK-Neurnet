@@ -16,11 +16,39 @@ class Dataset
         /** Default destructor */
         virtual ~Dataset();
 
+        /**
+        * Load one image from dataset into curr_im
+        */
         void load_one();
+
+        /**
+        * Returns the size of the current image
+        * @return A pair containing the lenght and width
+        */
         std::pair<uint32_t, uint32_t> get_size();
+
+        /**
+        * Returns the image currently stored
+        * @return A array of 8bit integers
+        */
         std::vector<std::vector<uint8_t>> get_im(){return curr_im;}
+
+        /**
+        * Returns what number the current image represents
+        * @return Label of current image
+        */
         uint8_t get_label(){return curr_label;}
+
+        /**
+        * Checks whether the end of the file has been reached
+        * @return True if eof has not been reached, false otherwise
+        */
         bool check_over();
+
+        /**
+        * Returns which image is currently loaded
+        * @return Index of the current image
+        */
         size_t get_index(){return index;}
 
 
