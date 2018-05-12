@@ -35,7 +35,7 @@ std::function<double()> get_randgen(std::vector<std::random_device::result_type>
     srand(time(nullptr));
     //std::random_device r;
     if(seeds == std::vector<std::random_device::result_type>(8,0)){
-        for(int i = 0; i <= 7; ++i){    ///RANDOM DEVICE IMPLEMENTED INCORRECTLY: USE BOOST
+        for(int i = 0; i <= 7; ++i){    //RANDOM DEVICE IMPLEMENTED INCORRECTLY: USE BOOST
             //seeds[i] = r();
             seeds[i] = rand();
             //std::cout << seeds[i] << std::endl;
@@ -63,7 +63,7 @@ logfile("Log001.txt")
     for(size_t z = 0; z < layers.size()-1; ++z){
         weights[z] = std::vector<std::vector<double>>(layers[z].n_number, std::vector<double>(layers[z+1].n_number,0));
         for(size_t y = 0; y <weights[z].size(); ++y){
-            for(size_t x = 0; x < weights[z][y].size(); ++x){      ///x is the current layer, y is the previous one
+            for(size_t x = 0; x < weights[z][y].size(); ++x){      //x is the current layer, y is the previous one
                 weights[z][y][x] = randgen();
             }
         }
@@ -102,7 +102,7 @@ std::ostream& operator<< (std::ostream& out, std::vector<std::vector<double>> ou
 std::vector<std::vector<double>> Neurnet::forprop(std::vector<std::vector<uint8_t>> image){
     std::vector<double> temp = mat_to_row(image);
     std::vector<std::vector<double>> outputs;
-    temp = temp/255; ///Input normalization
+    temp = temp/255; //Input normalization
     //temp += biases[0];
     activate(temp, n_layers[0].activator);
     outputs.push_back(temp);
@@ -120,7 +120,7 @@ std::vector<std::vector<double>> Neurnet::calc_deltas(std::vector<double> target
     for(int i = outputs.size()-1; i >= 0; --i){
         if(i == outputs.size()-1){
             std::vector<double> layer_deltas(outputs[i].size(), 0);
-            for(size_t j = 0; j < outputs[i].size(); ++j){     ///WATCH THE NEGATIVE SIGN
+            for(size_t j = 0; j < outputs[i].size(); ++j){     //WATCH THE NEGATIVE SIGN
                 layer_deltas[j] = -(target[j]-outputs[i][j])*n_layers[i].derivative(outputs[i][j]);
             }
             deltas[i] = layer_deltas;
@@ -252,7 +252,6 @@ void Neurnet::train_net(Dataset& training, int batchsize){
             std::cout << "Total error:" << err_tot_sum/batchsize << std::endl;
             err_tot_sum = 0;
         }
-        ///MINIBATCH
         training.load_one();
     }
 }
@@ -270,7 +269,7 @@ void Neurnet::write_to_master(){
     master << "Layers:" << std::endl;
     master << n_layers.size() << std::endl;
     for(Layer l : n_layers){
-        master << l.n_number << '\t'; ///Cannot handle act functions yet
+        master << l.n_number << '\t'; //Cannot handle act functions yet
     }
     master << learning_rate << std::endl;
     master << n_layers.size() << std::endl;

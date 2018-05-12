@@ -30,6 +30,7 @@ class Neurnet
         /**
         * Performs backpropagation training using a set of outputs from a forward pass
         * @param target The expected output on the final layer. Genrated by gen_target() in matrixmath.h
+        * @see gen_target()
         * @param output The outputs of every neuron in the network
         * @param weights_update The total sum of weight updates in a batch. (Required due to batch implementation)
         */
