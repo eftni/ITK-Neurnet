@@ -1,18 +1,19 @@
 #ifndef LAYER_H
 #define LAYER_H
 #include "functional"
+#include "math.h"
+
+enum act_func_type {identity = 0, sigmoid = 1, hyp_tan = 2};
 
 class Layer
 {
     public:
         Layer();
-        Layer(int num, std::function<double(double)> act, std::function<double(double)> der, bool d_c);
+        Layer(int num, act_func_type act);
         virtual ~Layer();
 
         unsigned int n_number; //!< number of neurons in layer
-        std::function<double(double)> activator; //!< Activation function
-        std::function<double(double)> derivative; //!< Derivative of activation function
-        bool derivative_control;  //!< 0 if derivative is defined with respect to input, 1 if defined with respect to output
+        act_func_type activator; //!< Activation function
 
     protected:
 

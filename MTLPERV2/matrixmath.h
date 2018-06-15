@@ -7,7 +7,7 @@
 * @param mat An image in matrix (2D) form
 * @return The image in 1D vector form
 */
-std::vector<double> mat_to_row(std::vector<std::vector<uint8_t>> mat){
+std::vector<double> mat_to_row(std::vector<std::vector<uint8_t>> mat){ //Modify file-reader
     std::vector<double> temp(mat.size()*mat[0].size(),0);
     for(size_t i = 0; i < mat.size(); ++i){
         for(size_t j = 0; j < mat[i].size(); ++j){
@@ -42,9 +42,39 @@ std::vector<double> matrix_mult(std::vector<double> out, std::vector<std::vector
 * @param input Vector of neuron inputs
 * @param activator The activation function to be used
 */
-inline void activate(std::vector<double>& input, std::function<double(double)> activator){
+template<typename func>
+inline void activate(std::vector<double>& input, func activator){
     for(double& d : input){
         d = activator(d);
+    }
+}
+
+/**
+* Selects the activator function to be used for a given layer
+* @param input Vector of neuron inputs
+* @param activator The activation function to be used
+*/
+void activate_choice(std::vector<double>& input, act_func_type activator){
+    switch (activator){
+        case identity: activate(input, [](double x){return x;});
+        break;
+        case hyp_tan: activate(input, tanh);
+        break;
+        case sigmoid: activate(input, [](double x){return 1/(1-exp(-x));});
+        break;
+    }
+}
+
+template<typename func>
+inline double derive(func derivative, double x){
+    return derivative(x);
+}
+
+std::function<double(double)> derivative_choice(act_func_type activator){
+    switch (activator){
+        case identity: return [](double x){return 1;};
+        case hyp_tan: return [](double x){return 1-pow(tanh(x),2);};
+        case sigmoid: return [](double x){return (1/(1-exp(-x)))*(1-(1/(1-exp(-x))));};
     }
 }
 

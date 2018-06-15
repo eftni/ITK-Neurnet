@@ -34,7 +34,6 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="filemanager.h" />
 		<Unit filename="include/Dataset.h" />
 		<Unit filename="include/Layer.h" />
 		<Unit filename="include/Neurnet.h" />

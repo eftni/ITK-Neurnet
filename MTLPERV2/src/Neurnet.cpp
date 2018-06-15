@@ -104,12 +104,12 @@ std::vector<std::vector<double>> Neurnet::forprop(std::vector<std::vector<uint8_
     std::vector<std::vector<double>> outputs;
     temp = temp/255; //Input normalization
     //temp += biases[0];
-    activate(temp, n_layers[0].activator);
+    activate_choice(temp, n_layers[0].activator);
     outputs.push_back(temp);
     for(size_t i = 0; i < weights.size(); ++i){
         temp = matrix_mult(temp, weights[i]);
         //temp += biases[i+1];
-        activate(temp, n_layers[i+1].activator);
+        activate_choice(temp, n_layers[i+1].activator);
         outputs.push_back(temp);
     }
     return outputs;
@@ -117,11 +117,12 @@ std::vector<std::vector<double>> Neurnet::forprop(std::vector<std::vector<uint8_
 
 std::vector<std::vector<double>> Neurnet::calc_deltas(std::vector<double> target, std::vector<std::vector<double>> outputs){
     std::vector<std::vector<double>> deltas(outputs.size(), std::vector<double>(1,0));
-    for(int i = outputs.size()-1; i >= 0; --i){
+    for(int i = outputs.size()-1; i >= 1; --i){ //Check for validity - may not need first layer deltas
+        std::function<double(double)> derivative = derivative_choice(n_layers[i].activator);
         if(i == outputs.size()-1){
             std::vector<double> layer_deltas(outputs[i].size(), 0);
-            for(size_t j = 0; j < outputs[i].size(); ++j){     //WATCH THE NEGATIVE SIGN
-                layer_deltas[j] = -(target[j]-outputs[i][j])*n_layers[i].derivative(outputs[i][j]);
+            for(size_t j = 0; j < outputs[i].size(); ++j){
+                layer_deltas[j] = -(target[j]-outputs[i][j])*derive(derivative, outputs[i-1][j]);
             }
             deltas[i] = layer_deltas;
         }else{
@@ -131,7 +132,7 @@ std::vector<std::vector<double>> Neurnet::calc_deltas(std::vector<double> target
                 for(size_t k = 0; k < weights[i][j].size(); ++k){
                     sumdelta += deltas[i+1][k]*weights[i][j][k];
                 }
-                layer_deltas[j] = sumdelta*n_layers[i].derivative(outputs[i][j]);
+                layer_deltas[j] = sumdelta*derive(derivative, outputs[i-1][j]);
             }
             deltas[i] = layer_deltas;
         }
