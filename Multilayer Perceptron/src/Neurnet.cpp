@@ -82,57 +82,45 @@ Neurnet::~Neurnet()
     //dtor
 }
 
-std::ostream& operator<< (std::ostream& out, std::vector<double> inputs){
-    for(size_t i = 0; i < inputs.size(); ++i){
-        out << inputs[i] << ' ' << tanh(inputs[i]) << std::endl;
-    }
-    return out;
-}
-
-std::ostream& operator<< (std::ostream& out, std::vector<std::vector<double>> outputs){
-    for(size_t i = 0; i < outputs.size(); ++i){
-        for(size_t j = 0; j < outputs[i].size(); ++j){
-            out << outputs[i][j] << ' ';
-        }
-        out << std::endl;
-    }
-    return out;
-}
-
-std::vector<std::vector<double>> Neurnet::forprop(std::vector<std::vector<uint8_t>> image){
+std::pair<std::vector<std::vector<double>>, std::vector<std::vector<double>>> Neurnet::forprop(std::vector<std::vector<uint8_t>> image){
     std::vector<double> temp = mat_to_row(image);
+    std::pair<std::vector<std::vector<double>>,std::vector<std::vector<double>>> ins_outs; //Pair of inputs and outputs for every neuron
+    std::vector<std::vector<double>> inputs;
     std::vector<std::vector<double>> outputs;
     temp = temp/255; //Input normalization
     //temp += biases[0];
+    inputs.push_back(temp);
     activate_choice(temp, n_layers[0].activator);
     outputs.push_back(temp);
     for(size_t i = 0; i < weights.size(); ++i){
         temp = matrix_mult(temp, weights[i]);
         //temp += biases[i+1];
+        inputs.push_back(temp);
         activate_choice(temp, n_layers[i+1].activator);
         outputs.push_back(temp);
     }
-    return outputs;
+    ins_outs = {inputs, outputs};
+    return ins_outs;
 }
 
-std::vector<std::vector<double>> Neurnet::calc_deltas(std::vector<double> target, std::vector<std::vector<double>> outputs){
-    std::vector<std::vector<double>> deltas(outputs.size(), std::vector<double>(1,0));
-    for(int i = outputs.size()-1; i >= 1; --i){ //Check for validity - may not need first layer deltas
+std::vector<std::vector<double>> Neurnet::calc_deltas(std::vector<double> target, const std::pair<std::vector<std::vector<double>>, std::vector<std::vector<double>>>& ins_outs){
+    std::vector<std::vector<double>> deltas(ins_outs.second.size(), std::vector<double>(1,0));
+    for(int i = ins_outs.second.size()-1; i >= 1; --i){ //Check for validity - may not need first layer deltas
         std::function<double(double)> derivative = derivative_choice(n_layers[i].activator);
-        if(i == outputs.size()-1){
-            std::vector<double> layer_deltas(outputs[i].size(), 0);
-            for(size_t j = 0; j < outputs[i].size(); ++j){
-                layer_deltas[j] = -(target[j]-outputs[i][j])*derive(derivative, outputs[i-1][j]);
+        if(i == ins_outs.second.size()-1){
+            std::vector<double> layer_deltas(ins_outs.second[i].size(), 0);
+            for(size_t j = 0; j < ins_outs.second[i].size(); ++j){
+                layer_deltas[j] = -(target[j]-ins_outs.second[i][j])*derive(derivative, ins_outs.second[i][j]); //Review
             }
             deltas[i] = layer_deltas;
         }else{
-            std::vector<double> layer_deltas(outputs[i].size(), 0);
+            std::vector<double> layer_deltas(ins_outs.second[i].size(), 0);
             for(size_t j = 0; j < weights[i].size(); ++j){
                 double sumdelta = 0;
                 for(size_t k = 0; k < weights[i][j].size(); ++k){
                     sumdelta += deltas[i+1][k]*weights[i][j][k];
                 }
-                layer_deltas[j] = sumdelta*derive(derivative, outputs[i-1][j]);
+                layer_deltas[j] = sumdelta*derive(derivative, ins_outs.second[i][j]);
             }
             deltas[i] = layer_deltas;
         }
@@ -140,12 +128,12 @@ std::vector<std::vector<double>> Neurnet::calc_deltas(std::vector<double> target
     return deltas;
 }
 
-void Neurnet::backprop(std::vector<double> target, std::vector<std::vector<double>> outputs, std::vector<std::vector<std::vector<double>>>& weights_update){
-    std::vector<std::vector<double>> deltas = calc_deltas(target, outputs);
+void Neurnet::backprop(std::vector<double> target, const std::pair<std::vector<std::vector<double>>, std::vector<std::vector<double>>>& ins_outs, std::vector<std::vector<std::vector<double>>>& weights_update){
+    std::vector<std::vector<double>> deltas = calc_deltas(target, ins_outs);
     for(size_t z = 0; z < weights.size(); ++z){
         for(size_t y = 0; y < weights[z].size(); ++y){
             for(size_t x = 0; x < weights[z][y].size(); ++x){
-                weights_update[z][y][x] += learning_rate*outputs[z][y]*deltas[z+1][x];      ///REWRITE FOR MATRIXMATH
+                weights_update[z][y][x] += learning_rate*ins_outs.first[z][y]*deltas[z+1][x];      ///REWRITE FOR MATRIXMATH
             }
         }
     }
@@ -195,7 +183,7 @@ double calc_total_error(uint8_t target, std::vector<double> actual){
 }
 
 void Neurnet::single_pass(uint8_t label, std::vector<std::vector<uint8_t>> image){
-    std::vector<std::vector<double>> outputs = forprop(image);
+    std::vector<std::vector<double>> outputs = forprop(image).second;
     if(out_check(label, outputs.back())){
         ++hit;
     }else{
@@ -204,14 +192,14 @@ void Neurnet::single_pass(uint8_t label, std::vector<std::vector<uint8_t>> image
 }
 
 double Neurnet::train_pass(uint8_t label, std::vector<std::vector<uint8_t>> image, std::vector<std::vector<std::vector<double>>>& weights_update){
-    std::vector<std::vector<double>> outputs = forprop(image);
+    const std::pair<std::vector<std::vector<double>>, std::vector<std::vector<double>>>& ins_outs = forprop(image);
     std::vector<double> target = gen_target(10, label);
-    backprop(target, outputs, weights_update);
-    for(size_t i = 0; i < outputs.back().size(); ++i){
-        logfile << outputs.back()[i] << ' ' << target[i] << ' ' << (pow(target[i]-outputs.back()[i],2))/2 << std::endl;
+    backprop(target, ins_outs, weights_update);
+    for(size_t i = 0; i < ins_outs.second.back().size(); ++i){
+        logfile << ins_outs.second.back()[i] << ' ' << target[i] << ' ' << (pow(target[i]-ins_outs.second.back()[i],2))/2 << std::endl;
     }
     logfile << "--------" << std::endl;
-    return calc_total_error(label, outputs.back());
+    return calc_total_error(label, ins_outs.second.back());
 }
 
 std::ostream& operator<<(std::ostream& out, std::vector<std::vector<std::vector<double>>> w){
@@ -231,7 +219,7 @@ void Neurnet::train_net(Dataset& training, int batchsize){
     std::vector<std::vector<std::vector<double>>> weights_update(weights);
     setvalue(weights_update,0);
     logfile << "------------Training error values------------" << std::endl;
-    int index = 0;
+    //int index = 0;
     double err_tot_sum = 0;
     while(training.check_over()){
         double err_tot = train_pass(training.get_label(), training.get_im(), weights_update);

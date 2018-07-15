@@ -76,6 +76,7 @@ std::function<double(double)> derivative_choice(act_func_type activator){
         case hyp_tan: return [](double x){return 1-pow(tanh(x),2);};
         case sigmoid: return [](double x){return (1/(1-exp(-x)))*(1-(1/(1-exp(-x))));};
     }
+    return [](double x){return 1;};
 }
 
 /**

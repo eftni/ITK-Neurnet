@@ -1,0 +1,273 @@
+# depslib dependency file v1.0
+1524220634 source:c:\users\niko\desktop\prog\neurnet\mtlperv2\mtlperv2\src\dataset.cpp
+	"Dataset.h"
+
+1523878291 c:\users\niko\desktop\prog\neurnet\mtlperv2\mtlperv2\include\dataset.h
+	"vector"
+	"utility"
+	"stdint.h"
+	"fstream"
+	"stdlib.h"
+	"iostream"
+
+1523878290 source:c:\users\niko\desktop\prog\neurnet\mtlperv2\mtlperv2\src\layer.cpp
+	"Layer.h"
+	"utility"
+	"iostream"
+	"stdlib.h"
+
+1524138351 c:\users\niko\desktop\prog\neurnet\mtlperv2\mtlperv2\include\layer.h
+	"functional"
+
+1524825440 source:c:\users\niko\desktop\prog\neurnet\mtlperv2\mtlperv2\main.cpp
+	<iostream>
+	"Dataset.h"
+	"Neurnet.h"
+	"random"
+	"functional"
+	"math.h"
+	"Layer.h"
+
+1524824751 c:\users\niko\desktop\prog\neurnet\mtlperv2\mtlperv2\include\neurnet.h
+	"vector"
+	"functional"
+	"random"
+	"iostream"
+	"Dataset.h"
+	"Layer.h"
+
+1524825540 source:c:\users\niko\desktop\prog\neurnet\mtlperv2\mtlperv2\src\neurnet.cpp
+	"Neurnet.h"
+	"random"
+	"iostream"
+	"functional"
+	"..\\matrixmath.h"
+	"time.h"
+	"stdio.h"
+	"math.h"
+	"fstream"
+	"sstream"
+
+1524651840 c:\users\niko\desktop\prog\neurnet\mtlperv2\mtlperv2\\matrixmath.h
+	"math.h"
+
+1524910461 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\mtlperv2\mtlperv2\src\dataset.cpp
+	"Dataset.h"
+
+1524179886 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\mtlperv2\mtlperv2\include\dataset.h
+	"vector"
+	"utility"
+	"stdint.h"
+	"fstream"
+	"stdlib.h"
+	"iostream"
+
+1524178944 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\mtlperv2\mtlperv2\src\layer.cpp
+	"Layer.h"
+	"utility"
+	"iostream"
+	"stdlib.h"
+
+1524178944 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\mtlperv2\mtlperv2\include\layer.h
+	"functional"
+
+1524910243 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\mtlperv2\mtlperv2\src\neurnet.cpp
+	"Neurnet.h"
+	"random"
+	"iostream"
+	"functional"
+	"..\\matrixmath.h"
+	"time.h"
+	"stdio.h"
+	"math.h"
+	"fstream"
+	"sstream"
+
+1524910243 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\mtlperv2\mtlperv2\include\neurnet.h
+	"vector"
+	"functional"
+	"random"
+	"iostream"
+	"Dataset.h"
+	"Layer.h"
+
+1524910243 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\mtlperv2\mtlperv2\\matrixmath.h
+	"math.h"
+
+1524910461 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\mtlperv2\mtlperv2\main.cpp
+	<iostream>
+	"Dataset.h"
+	"Neurnet.h"
+	"random"
+	"functional"
+	"math.h"
+	"Layer.h"
+
+1529102996 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\mtlperv2\main.cpp
+	<iostream>
+	"Dataset.h"
+	"Neurnet.h"
+	"random"
+	"functional"
+	"math.h"
+
+1526119051 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\mtlperv2\include\dataset.h
+	"vector"
+	"utility"
+	"stdint.h"
+	"fstream"
+	"stdlib.h"
+	"iostream"
+
+1526121821 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\mtlperv2\include\neurnet.h
+	"vector"
+	"functional"
+	"random"
+	"iostream"
+	"Dataset.h"
+	"Layer.h"
+
+1529102928 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\mtlperv2\include\layer.h
+	"functional"
+	"math.h"
+
+1526118394 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\mtlperv2\src\dataset.cpp
+	"Dataset.h"
+
+1529103002 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\mtlperv2\src\layer.cpp
+	"Layer.h"
+	"utility"
+	"iostream"
+	"stdlib.h"
+
+1529106634 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\mtlperv2\src\neurnet.cpp
+	"Neurnet.h"
+	"random"
+	"iostream"
+	"functional"
+	"..\\matrixmath.h"
+	"time.h"
+	"stdio.h"
+	"math.h"
+	"fstream"
+	"sstream"
+
+1529106596 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\mtlperv2\\matrixmath.h
+	"math.h"
+
+1531651839 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\multilayer perceptron\main.cpp
+	<iostream>
+	"Dataset.h"
+	"Neurnet.h"
+	"random"
+	"functional"
+	"math.h"
+	"chrono"
+
+1531651443 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\multilayer perceptron\include\dataset.h
+	"vector"
+	"utility"
+	"stdint.h"
+	"fstream"
+	"stdlib.h"
+	"iostream"
+
+1531651365 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\multilayer perceptron\include\neurnet.h
+	"vector"
+	"functional"
+	"random"
+	"iostream"
+	"Dataset.h"
+	"Layer.h"
+
+1531651429 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\multilayer perceptron\include\layer.h
+	"functional"
+	"math.h"
+
+1531651443 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\multilayer perceptron\src\dataset.cpp
+	"Dataset.h"
+
+1531651429 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\multilayer perceptron\src\layer.cpp
+	"Layer.h"
+	"utility"
+	"iostream"
+	"stdlib.h"
+
+1531651509 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\multilayer perceptron\src\neurnet.cpp
+	"Neurnet.h"
+	"random"
+	"iostream"
+	"functional"
+	"..\\matrixmath.h"
+	"time.h"
+	"stdio.h"
+	"math.h"
+	"fstream"
+	"sstream"
+
+1531651509 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\multilayer perceptron\\matrixmath.h
+	"math.h"
+
+1531651839 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\main.cpp
+	<iostream>
+	"Dataset.h"
+	"Neurnet.h"
+	"random"
+	"functional"
+	"math.h"
+	"chrono"
+
+1531651443 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\include\dataset.h
+	"vector"
+	"utility"
+	"stdint.h"
+	"fstream"
+	"stdlib.h"
+	"iostream"
+
+1531651365 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\include\neurnet.h
+	"vector"
+	"functional"
+	"random"
+	"iostream"
+	"Dataset.h"
+	"Layer.h"
+
+1531651429 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\include\layer.h
+	"functional"
+	"math.h"
+
+1531651443 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\src\dataset.cpp
+	"Dataset.h"
+
+1531651429 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\src\layer.cpp
+	"Layer.h"
+	"utility"
+	"iostream"
+	"stdlib.h"
+
+1531659448 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\src\neurnet.cpp
+	"Neurnet.h"
+	"random"
+	"iostream"
+	"functional"
+	"KernelFunctor.h"
+	"..\\matrixmath.h"
+	"time.h"
+	"stdio.h"
+	"math.h"
+	"fstream"
+	"sstream"
+
+1531651509 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\\matrixmath.h
+	"math.h"
+
+1531659473 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\src\kernelfunctor.cpp
+	"KernelFunctor.h"
+	"vector"
+	"iostream"
+	"stdlib.h"
+
+1531660393 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\include\kernelfunctor.h
+	<CL/cl2.hpp>
+

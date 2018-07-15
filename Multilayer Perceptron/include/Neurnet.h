@@ -23,9 +23,9 @@ class Neurnet
         /**
         * Performs forward propoagation on the currently loaded image.
         * @param image The current image
-        * @return The outputs of every neuron
+        * @return The inputs and outputs of every neuron
         */
-        std::vector<std::vector<double>> forprop(std::vector<std::vector<uint8_t>> image);
+        std::pair<std::vector<std::vector<double>>, std::vector<std::vector<double>>> forprop(std::vector<std::vector<uint8_t>> image);
 
         /**
         * Performs backpropagation training using a set of outputs from a forward pass
@@ -34,7 +34,7 @@ class Neurnet
         * @param output The outputs of every neuron in the network
         * @param weights_update The total sum of weight updates in a batch. (Required due to batch implementation)
         */
-        void backprop(std::vector<double> target, std::vector<std::vector<double>> output,std::vector<std::vector<std::vector<double>>>& weights_update);
+        void backprop(std::vector<double> target, const std::pair<std::vector<std::vector<double>>, std::vector<std::vector<double>>>& ins_outs, std::vector<std::vector<std::vector<double>>>& weights_update);
 
         /**
         * Calculates the deltas (neuron-output-independent components of a weight update) for every neuron
@@ -42,7 +42,7 @@ class Neurnet
         * @param outputs The outputs of every neuron in the network
         * @return The deltas of every neuron in the network
         */
-        std::vector<std::vector<double>> calc_deltas(std::vector<double> target, std::vector<std::vector<double>> outputs);
+        std::vector<std::vector<double>> calc_deltas(std::vector<double> target, const std::pair<std::vector<std::vector<double>>, std::vector<std::vector<double>>>& ins_outs);
 
         /**
         * Performs a single forward propagation and check if the output is correct
