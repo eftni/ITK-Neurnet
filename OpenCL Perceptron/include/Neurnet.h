@@ -49,7 +49,7 @@ class Neurnet
         * @param label The number the current image represents
         * @param image The currently loaded image
         */
-        void single_pass(uint8_t label, std::vector<std::vector<uint8_t>> image);
+        void single_pass(uint8_t label, const std::vector<std::vector<uint8_t>>& image);
 
         /**
         * Performs a single forward propagation and trains the network based on the output

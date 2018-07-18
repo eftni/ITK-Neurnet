@@ -225,7 +225,7 @@
 	"stdlib.h"
 	"iostream"
 
-1531651365 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\include\neurnet.h
+1531859742 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\include\neurnet.h
 	"vector"
 	"functional"
 	"random"
@@ -246,12 +246,11 @@
 	"iostream"
 	"stdlib.h"
 
-1531659448 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\src\neurnet.cpp
+1531859875 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\src\neurnet.cpp
 	"Neurnet.h"
 	"random"
 	"iostream"
 	"functional"
-	"KernelFunctor.h"
 	"..\\matrixmath.h"
 	"time.h"
 	"stdio.h"
@@ -259,7 +258,7 @@
 	"fstream"
 	"sstream"
 
-1531651509 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\\matrixmath.h
+1531683142 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\\matrixmath.h
 	"math.h"
 
 1531659473 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\src\kernelfunctor.cpp

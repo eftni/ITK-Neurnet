@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="MTLPERV2" />
+		<Option title="OpenCl Perceptron" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
@@ -35,11 +35,13 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="include/Dataset.h" />
+		<Unit filename="include/KernelFunctor.h" />
 		<Unit filename="include/Layer.h" />
 		<Unit filename="include/Neurnet.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="matrixmath.h" />
 		<Unit filename="src/Dataset.cpp" />
+		<Unit filename="src/KernelFunctor.cpp" />
 		<Unit filename="src/Layer.cpp" />
 		<Unit filename="src/Neurnet.cpp" />
 		<Extensions>

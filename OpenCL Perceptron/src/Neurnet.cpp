@@ -232,6 +232,19 @@ void Neurnet::train_net(Dataset& training, int batchsize){
     }
 }
 
+std::ostream& operator<<(std::ostream& out, std::vector<std::vector<std::vector<float>>> w){
+    for(std::vector<std::vector<float>> vv : w){
+        for(std::vector<float> v : vv){
+            for(float d : v){
+                out << d << ' ';
+            }
+            out << std::endl;
+        }
+        out << ';' << std::endl;
+    }
+    return out;
+}
+
 void Neurnet::write_to_master(){
     std::ofstream master("master.txt");
     master << "-------Current best network:-------" << std::endl;
