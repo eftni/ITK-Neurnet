@@ -11,7 +11,7 @@ class Neurnet
 {
     public:
         Neurnet();
-        Neurnet(std::vector<Layer> layers, double learnrate, std::vector<std::random_device::result_type> rs = {0,0,0,0,0,0,0,0});
+        Neurnet(std::vector<Layer> layers, float learnrate, std::vector<std::random_device::result_type> rs = {0,0,0,0,0,0,0,0});
         virtual ~Neurnet();
 
         /**
@@ -25,7 +25,7 @@ class Neurnet
         * @param image The current image
         * @return The inputs and outputs of every neuron
         */
-        std::pair<std::vector<std::vector<double>>, std::vector<std::vector<double>>> forprop(std::vector<std::vector<uint8_t>> image);
+        std::pair<std::vector<std::vector<float>>, std::vector<std::vector<float>>> forprop(std::vector<std::vector<uint8_t>> image);
 
         /**
         * Performs backpropagation training using a set of outputs from a forward pass
@@ -34,7 +34,7 @@ class Neurnet
         * @param output The outputs of every neuron in the network
         * @param weights_update The total sum of weight updates in a batch. (Required due to batch implementation)
         */
-        void backprop(std::vector<double> target, const std::pair<std::vector<std::vector<double>>, std::vector<std::vector<double>>>& ins_outs, std::vector<std::vector<std::vector<double>>>& weights_update);
+        void backprop(std::vector<float> target, const std::pair<std::vector<std::vector<float>>, std::vector<std::vector<float>>>& ins_outs, std::vector<std::vector<std::vector<float>>>& weights_update, std::vector<std::vector<float>>& bias_update);
 
         /**
         * Calculates the deltas (neuron-output-independent components of a weight update) for every neuron
@@ -42,7 +42,7 @@ class Neurnet
         * @param outputs The outputs of every neuron in the network
         * @return The deltas of every neuron in the network
         */
-        std::vector<std::vector<double>> calc_deltas(std::vector<double> target, const std::pair<std::vector<std::vector<double>>, std::vector<std::vector<double>>>& ins_outs);
+        std::vector<std::vector<float>> calc_deltas(std::vector<float> target, const std::pair<std::vector<std::vector<float>>, std::vector<std::vector<float>>>& ins_outs);
 
         /**
         * Performs a single forward propagation and check if the output is correct
@@ -58,7 +58,7 @@ class Neurnet
         * @param weights_update The total sum of weight updates in a batch. (Required due to batch implementation)
         * @return The total error value of the output
         */
-        double train_pass(uint8_t label, std::vector<std::vector<uint8_t>> image, std::vector<std::vector<std::vector<double>>>& weights_update);
+        float train_pass(uint8_t label, std::vector<std::vector<uint8_t>> image, std::vector<std::vector<std::vector<float>>>& weights_update, std::vector<std::vector<float>>& bias_update);
 
         /**
         * Trains the network using one entire dataset
@@ -82,10 +82,10 @@ class Neurnet
     protected:
 
     private:
-        double learning_rate; //!< Coefficient for weight adjustment "eta"
+        float learning_rate; //!< Coefficient for weight adjustment "eta"
         std::vector<std::random_device::result_type> randgen_seeds; //!< Seeds used in mersenne twister for reproducibility
-        std::vector<std::vector<std::vector<double>>> weights; //!< Weights between neurons
-        std::vector<std::vector<double>> biases;
+        std::vector<std::vector<std::vector<float>>> weights; //!< Weights between neurons
+        std::vector<std::vector<float>> biases;
         std::vector<Layer> n_layers;
         unsigned int hit; //!< Number of pictures guessed correctly
         unsigned int miss; //!< Number of pictures guessed incorrectly

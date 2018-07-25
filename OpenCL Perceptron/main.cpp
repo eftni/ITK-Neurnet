@@ -1,6 +1,11 @@
 #include <iostream>
 #include "Dataset.h"
-#include "Neurnet.h"
+#define USE_GPU_
+#ifdef USE_GPU_
+    #include "NeurGPU.h"
+    #else
+    #include "Neurnet.h"
+#endif // USE_GPU_
 #include "random"
 #include "functional"
 #include "math.h"

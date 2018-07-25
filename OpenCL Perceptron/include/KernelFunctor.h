@@ -18,9 +18,7 @@ class KernelFunctor
         void set_argument(int num, T first, Targs... Args);
 
         template<typename... Targs>
-        std::vector<float> operator()(Targs... Kargs);
-
-        void create_buffers(const std::vector<std::vector<std::vector<float>>>& weights);
+        void operator()(cl::NDRange offset, cl::NDRange threads, cl::NDRange workgroups, Targs... kargs);
 
     protected:
 
@@ -32,8 +30,6 @@ class KernelFunctor
         cl::Program kernel_program;
         cl::CommandQueue c_queue;
         cl::Kernel def_kernel;
-        cl::Buffer weight_buffer;
-        std::vector<cl::Buffer> input_buffers, output_buffers;
         std::string fetch_kernel_code(std::string fname);
 };
 

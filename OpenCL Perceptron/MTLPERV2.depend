@@ -208,9 +208,10 @@
 1531651509 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\multilayer perceptron\\matrixmath.h
 	"math.h"
 
-1531651839 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\main.cpp
+1532259737 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\main.cpp
 	<iostream>
 	"Dataset.h"
+	"NeurGPU.h"
 	"Neurnet.h"
 	"random"
 	"functional"
@@ -225,7 +226,7 @@
 	"stdlib.h"
 	"iostream"
 
-1531859742 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\include\neurnet.h
+1532259494 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\include\neurnet.h
 	"vector"
 	"functional"
 	"random"
@@ -246,7 +247,7 @@
 	"iostream"
 	"stdlib.h"
 
-1531859875 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\src\neurnet.cpp
+1532259494 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\src\neurnet.cpp
 	"Neurnet.h"
 	"random"
 	"iostream"
@@ -258,15 +259,40 @@
 	"fstream"
 	"sstream"
 
-1531683142 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\\matrixmath.h
+1532259494 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\\matrixmath.h
 	"math.h"
 
-1531659473 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\src\kernelfunctor.cpp
+1532257109 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\src\kernelfunctor.cpp
 	"KernelFunctor.h"
 	"vector"
 	"iostream"
 	"stdlib.h"
+	"fstream"
+	"cstdarg"
 
-1531660393 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\include\kernelfunctor.h
+1532257170 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\include\kernelfunctor.h
 	<CL/cl2.hpp>
+
+1532257109 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\\gpu_matrixmath.h
+	"KernelFunctor.h"
+
+1532259724 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\include\neurgpu.h
+	"vector"
+	"functional"
+	"random"
+	"iostream"
+	"Dataset.h"
+	"Layer.h"
+
+1532259724 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\opencl perceptron\src\neurgpu.cpp
+	"NeurGPU.h"
+	"random"
+	"iostream"
+	"functional"
+	"..\\matrixmath.h"
+	"time.h"
+	"stdio.h"
+	"math.h"
+	"fstream"
+	"sstream"
 

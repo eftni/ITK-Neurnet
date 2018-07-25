@@ -34,6 +34,7 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="GPU_matrixmath.h" />
 		<Unit filename="include/Dataset.h" />
 		<Unit filename="include/KernelFunctor.h" />
 		<Unit filename="include/Layer.h" />

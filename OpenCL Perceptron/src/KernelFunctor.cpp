@@ -71,22 +71,6 @@ void KernelFunctor::operator()(cl::NDRange offset, cl::NDRange threads, cl::NDRa
     c_queue.finish();
 }
 
-size_t sum_weight_elements(const std::vector<std::vector<std::vector<float>>>& weights){
-    int sum = 0;
-    for(std::vector<std::vector<float>> vv : weights){
-        sum += vv.size()*vv[0].size();
-    }
-    return sum;
-}
 
-void create_buffers(const std::vector<std::vector<std::vector<float>>>& weights){
-    weight_buffer = cl::Buffer(def_device_context, CL_MEM_READ_ONLY, sizeof(float)*sum_weight_elements(weights));
-    input_buffer.push_back(cl::Buffer(def_device_context, CL_MEM_READ_ONLY, sizeof(float)*weights[0].size()));
-    output_buffer.push_back(cl::Buffer(def_device_context, CL_MEM_READ_ONLY, sizeof(float)*weights[0].size()))
-    for(int i = 0; i < weights.size(); ++i){
-        input_buffer.push_back(cl::Buffer(def_device_context, CL_MEM_READ_WRITE, sizeof(float)*weights[i][0].size()));
-        output_buffers.push_back(cl::Buffer(def_device_context, CL_MEM_READ_WRITE, sizeof(float)*weights[i][0].size()));
-    }
-}
 
 

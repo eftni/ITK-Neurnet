@@ -2,7 +2,7 @@
 #include "random"
 #include "iostream"
 #include "functional"
-#include "..\\matrixmath.h"
+#include "..\\GPU_matrixmath.h"
 #include "time.h"
 #include "stdio.h"
 #include "math.h"
@@ -47,6 +47,16 @@ std::function<float()> get_randgen(std::vector<std::random_device::result_type>&
     return randgen1;
 }
 
+void Neurnet::create_buffers(){
+    weight_buffer = cl::Buffer(def_device_context, CL_MEM_READ_ONLY, sizeof(float)*sum_weight_elements(weights));
+    input_buffer.push_back(cl::Buffer(def_device_context, CL_MEM_READ_ONLY, sizeof(float)*weights[0].size()));
+    output_buffer.push_back(cl::Buffer(def_device_context, CL_MEM_READ_ONLY, sizeof(float)*weights[0].size()))
+    for(int i = 0; i < weights.size(); ++i){
+        input_buffer.push_back(cl::Buffer(def_device_context, CL_MEM_READ_WRITE, sizeof(float)*weights[i][0].size()));
+        output_buffers.push_back(cl::Buffer(def_device_context, CL_MEM_READ_WRITE, sizeof(float)*weights[i][0].size()));
+    }
+}
+
 
 Neurnet::Neurnet(std::vector<Layer> layers, float learnrate, std::vector<std::random_device::result_type> rs) :
 learning_rate(learnrate),
@@ -68,6 +78,7 @@ logfile("Log001.txt")
             }
         }
     }
+
     for(size_t i = 0; i < layers.size(); ++i){
         biases[i] = std::vector<float>(layers[i].n_number, 0);
         for(size_t j = 0; j < layers[i].n_number; ++j){

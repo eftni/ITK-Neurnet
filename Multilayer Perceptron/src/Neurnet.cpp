@@ -17,7 +17,7 @@ Neurnet::Neurnet(){
 * Warms up the Mersenne Twister by producing 100000 random numbers
 * @param randgen A callable random generator
 */
-void warmup(std::function<double()>& randgen){
+void warmup(std::function<float()>& randgen){
     for(int i = 0; i <= 100000; ++i){
         randgen();
     }
@@ -30,7 +30,7 @@ void warmup(std::function<double()>& randgen){
 * @param seeds A set of seeds to be used by the generator
 * @return A callable object which generates random numbers of a uniform distribution.
 */
-std::function<double()> get_randgen(std::vector<std::random_device::result_type>& seeds){
+std::function<float()> get_randgen(std::vector<std::random_device::result_type>& seeds){
     std::cout << "Creating random generator" << std::endl;
     srand(time(nullptr));
     //std::random_device r;
@@ -42,26 +42,26 @@ std::function<double()> get_randgen(std::vector<std::random_device::result_type>
         }
     }
     std::seed_seq s{seeds[0],seeds[1],seeds[2],seeds[3],seeds[4],seeds[5],seeds[6],seeds[7]};
-    std::function<double()> randgen1 = std::bind(std::uniform_real_distribution<double>(-1,1), std::mt19937(s));
+    std::function<float()> randgen1 = std::bind(std::uniform_real_distribution<float>(-1,1), std::mt19937(s));
     warmup(randgen1);
     return randgen1;
 }
 
 
-Neurnet::Neurnet(std::vector<Layer> layers, double learnrate, std::vector<std::random_device::result_type> rs) :
+Neurnet::Neurnet(std::vector<Layer> layers, float learnrate, std::vector<std::random_device::result_type> rs) :
 learning_rate(learnrate),
 randgen_seeds(rs),
-weights(layers.size()-1, std::vector<std::vector<double>>(1, std::vector<double>(1,0))),
-biases(layers.size(), std::vector<double>(1,0)),
+weights(layers.size()-1, std::vector<std::vector<float>>(1, std::vector<float>(1,0))),
+biases(layers.size(), std::vector<float>(1,0)),
 n_layers(layers),
 hit(0),
 miss(0),
 logfile("Log001.txt")
 {
-    std::function<double()> randgen = get_randgen(randgen_seeds);
+    std::function<float()> randgen = get_randgen(randgen_seeds);
     std::cout << "Generating weights" << std::endl;
     for(size_t z = 0; z < layers.size()-1; ++z){
-        weights[z] = std::vector<std::vector<double>>(layers[z].n_number, std::vector<double>(layers[z+1].n_number,0));
+        weights[z] = std::vector<std::vector<float>>(layers[z].n_number, std::vector<float>(layers[z+1].n_number,0));
         for(size_t y = 0; y <weights[z].size(); ++y){
             for(size_t x = 0; x < weights[z][y].size(); ++x){      //x is the current layer, y is the previous one
                 weights[z][y][x] = randgen();
@@ -69,9 +69,9 @@ logfile("Log001.txt")
         }
     }
     for(size_t i = 0; i < layers.size(); ++i){
-        biases[i] = std::vector<double>(layers[i].n_number, 0);
+        biases[i] = std::vector<float>(layers[i].n_number, 0);
         for(size_t j = 0; j < layers[i].n_number; ++j){
-            biases[i][j] = randgen();
+            biases[i][j] = randgen()/10;
         }
     }
     std::cout << "Weights generated: Starting training" << std::endl;
@@ -82,11 +82,11 @@ Neurnet::~Neurnet()
     //dtor
 }
 
-std::pair<std::vector<std::vector<double>>, std::vector<std::vector<double>>> Neurnet::forprop(std::vector<std::vector<uint8_t>> image){
-    std::vector<double> temp = mat_to_row(image);
-    std::pair<std::vector<std::vector<double>>,std::vector<std::vector<double>>> ins_outs; //Pair of inputs and outputs for every neuron
-    std::vector<std::vector<double>> inputs;
-    std::vector<std::vector<double>> outputs;
+std::pair<std::vector<std::vector<float>>, std::vector<std::vector<float>>> Neurnet::forprop(std::vector<std::vector<uint8_t>> image){
+    std::vector<float> temp = mat_to_row(image);
+    std::pair<std::vector<std::vector<float>>,std::vector<std::vector<float>>> ins_outs; //Pair of inputs and outputs for every neuron
+    std::vector<std::vector<float>> inputs;
+    std::vector<std::vector<float>> outputs;
     temp = temp/255; //Input normalization
     //temp += biases[0];
     inputs.push_back(temp);
@@ -103,20 +103,20 @@ std::pair<std::vector<std::vector<double>>, std::vector<std::vector<double>>> Ne
     return ins_outs;
 }
 
-std::vector<std::vector<double>> Neurnet::calc_deltas(std::vector<double> target, const std::pair<std::vector<std::vector<double>>, std::vector<std::vector<double>>>& ins_outs){
-    std::vector<std::vector<double>> deltas(ins_outs.second.size(), std::vector<double>(1,0));
+std::vector<std::vector<float>> Neurnet::calc_deltas(std::vector<float> target, const std::pair<std::vector<std::vector<float>>, std::vector<std::vector<float>>>& ins_outs){
+    std::vector<std::vector<float>> deltas(ins_outs.second.size(), std::vector<float>(1,0));
     for(int i = ins_outs.second.size()-1; i >= 1; --i){ //Check for validity - may not need first layer deltas
-        std::function<double(double)> derivative = derivative_choice(n_layers[i].activator);
+        std::function<float(float)> derivative = derivative_choice(n_layers[i].activator);
         if(i == ins_outs.second.size()-1){
-            std::vector<double> layer_deltas(ins_outs.second[i].size(), 0);
+            std::vector<float> layer_deltas(ins_outs.second[i].size(), 0);
             for(size_t j = 0; j < ins_outs.second[i].size(); ++j){
                 layer_deltas[j] = -(target[j]-ins_outs.second[i][j])*derive(derivative, ins_outs.second[i][j]); //Review
             }
             deltas[i] = layer_deltas;
         }else{
-            std::vector<double> layer_deltas(ins_outs.second[i].size(), 0);
+            std::vector<float> layer_deltas(ins_outs.second[i].size(), 0);
             for(size_t j = 0; j < weights[i].size(); ++j){
-                double sumdelta = 0;
+                float sumdelta = 0;
                 for(size_t k = 0; k < weights[i][j].size(); ++k){
                     sumdelta += deltas[i+1][k]*weights[i][j][k];
                 }
@@ -128,8 +128,8 @@ std::vector<std::vector<double>> Neurnet::calc_deltas(std::vector<double> target
     return deltas;
 }
 
-void Neurnet::backprop(std::vector<double> target, const std::pair<std::vector<std::vector<double>>, std::vector<std::vector<double>>>& ins_outs, std::vector<std::vector<std::vector<double>>>& weights_update){
-    std::vector<std::vector<double>> deltas = calc_deltas(target, ins_outs);
+void Neurnet::backprop(std::vector<float> target, const std::pair<std::vector<std::vector<float>>, std::vector<std::vector<float>>>& ins_outs, std::vector<std::vector<std::vector<float>>>& weights_update, std::vector<std::vector<float>>& bias_update){
+    std::vector<std::vector<float>> deltas = calc_deltas(target, ins_outs);
     for(size_t z = 0; z < weights.size(); ++z){
         for(size_t y = 0; y < weights[z].size(); ++y){
             for(size_t x = 0; x < weights[z][y].size(); ++x){
@@ -137,11 +137,11 @@ void Neurnet::backprop(std::vector<double> target, const std::pair<std::vector<s
             }
         }
     }
-    for(size_t i = 0; i < biases.size(); ++i){
+    /*for(size_t i = 0; i < biases.size(); ++i){
         for(size_t j = 0; j < biases[i].size(); ++j){
-            biases[i][j] -= learning_rate*deltas[i][j];
+            bias_update[i][j] -= learning_rate*deltas[i][j];
         }
-    }
+    }*/
 }
 
 /**
@@ -150,9 +150,9 @@ void Neurnet::backprop(std::vector<double> target, const std::pair<std::vector<s
 * @param actual The output of a forward pass
 * @return True if the output matches the target, false otherwise
 */
-bool out_check(uint8_t target, std::vector<double> actual){
+bool out_check(uint8_t target, std::vector<float> actual){
     size_t top = 0;
-    double maxi = 0;
+    float maxi = 0;
     for(size_t i = 0; i < actual.size(); ++i){
         if(actual[i]>maxi){
             maxi = actual[i];
@@ -173,9 +173,9 @@ bool out_check(uint8_t target, std::vector<double> actual){
 * @param actual The output of a forward pass
 * @return The total error.
 */
-double calc_total_error(uint8_t target, std::vector<double> actual){
-    std::vector<double> t = gen_target(10, target);
-    double err_tot = 0;
+float calc_total_error(uint8_t target, std::vector<float> actual){
+    std::vector<float> t = gen_target(10, target);
+    float err_tot = 0;
     for(size_t i = 0; i < actual.size(); ++i){
         err_tot += (pow(t[i]-actual[i],2))/2;
     }
@@ -183,7 +183,7 @@ double calc_total_error(uint8_t target, std::vector<double> actual){
 }
 
 void Neurnet::single_pass(uint8_t label, std::vector<std::vector<uint8_t>> image){
-    std::vector<std::vector<double>> outputs = forprop(image).second;
+    std::vector<std::vector<float>> outputs = forprop(image).second;
     if(out_check(label, outputs.back())){
         ++hit;
     }else{
@@ -191,10 +191,10 @@ void Neurnet::single_pass(uint8_t label, std::vector<std::vector<uint8_t>> image
     }
 }
 
-double Neurnet::train_pass(uint8_t label, std::vector<std::vector<uint8_t>> image, std::vector<std::vector<std::vector<double>>>& weights_update){
-    const std::pair<std::vector<std::vector<double>>, std::vector<std::vector<double>>>& ins_outs = forprop(image);
-    std::vector<double> target = gen_target(10, label);
-    backprop(target, ins_outs, weights_update);
+float Neurnet::train_pass(uint8_t label, std::vector<std::vector<uint8_t>> image, std::vector<std::vector<std::vector<float>>>& weights_update, std::vector<std::vector<float>>& bias_update){
+    const std::pair<std::vector<std::vector<float>>, std::vector<std::vector<float>>>& ins_outs = forprop(image);
+    std::vector<float> target = gen_target(10, label);
+    backprop(target, ins_outs, weights_update, bias_update);
     for(size_t i = 0; i < ins_outs.second.back().size(); ++i){
         logfile << ins_outs.second.back()[i] << ' ' << target[i] << ' ' << (pow(target[i]-ins_outs.second.back()[i],2))/2 << std::endl;
     }
@@ -202,10 +202,10 @@ double Neurnet::train_pass(uint8_t label, std::vector<std::vector<uint8_t>> imag
     return calc_total_error(label, ins_outs.second.back());
 }
 
-std::ostream& operator<<(std::ostream& out, std::vector<std::vector<std::vector<double>>> w){
-    for(std::vector<std::vector<double>> vv : w){
-        for(std::vector<double> v : vv){
-            for(double d : v){
+std::ostream& operator<<(std::ostream& out, std::vector<std::vector<std::vector<float>>> w){
+    for(std::vector<std::vector<float>> vv : w){
+        for(std::vector<float> v : vv){
+            for(float d : v){
                 out << d << ' ';
             }
             out << std::endl;
@@ -216,13 +216,15 @@ std::ostream& operator<<(std::ostream& out, std::vector<std::vector<std::vector<
 }
 
 void Neurnet::train_net(Dataset& training, int batchsize){
-    std::vector<std::vector<std::vector<double>>> weights_update(weights);
+    std::vector<std::vector<std::vector<float>>> weights_update(weights);
+    std::vector<std::vector<float>>& bias_update(biases);
     setvalue(weights_update,0);
+    //setvalue(bias_update,0);
     logfile << "------------Training error values------------" << std::endl;
     //int index = 0;
-    double err_tot_sum = 0;
+    float err_tot_sum = 0;
     while(training.check_over()){
-        double err_tot = train_pass(training.get_label(), training.get_im(), weights_update);
+        float err_tot = train_pass(training.get_label(), training.get_im(), weights_update, bias_update);
         err_tot_sum += err_tot;
         /*if(training.get_index()%100 == 0){
             std::stringstream ss;
@@ -236,7 +238,9 @@ void Neurnet::train_net(Dataset& training, int batchsize){
 
         if(training.get_index()%batchsize == 0){
             weights -= weights_update/batchsize;
+            //biases -= bias_update/batchsize;
             setvalue(weights_update, 0);
+            //setvalue(bias_update, 0);
             std::cout << training.get_index() << '/' << 60000 << std::endl;
             std::cout << "Total error:" << err_tot_sum/batchsize << std::endl;
             err_tot_sum = 0;
@@ -248,7 +252,7 @@ void Neurnet::train_net(Dataset& training, int batchsize){
 void Neurnet::write_to_master(){
     std::ofstream master("master.txt");
     master << "-------Current best network:-------" << std::endl;
-    master << "Percentage: " << ((double)hit/10000)*100 << std::endl;
+    master << "Percentage: " << ((float)hit/10000)*100 << std::endl;
     master << "Hit: " << hit << " Miss: " << miss << std::endl;
     master << "-------Network settings:-------" << std::endl;
     master << "Seeds:" << std::endl;
@@ -269,7 +273,7 @@ void Neurnet::write_to_master(){
 /**
 * Reads how well the current best network performed
 */
-double read_master_best(){
+float read_master_best(){
     std::ifstream fin("master.txt");
     std::string s;
     std::getline(fin, s);
@@ -288,13 +292,13 @@ void Neurnet::test_net(Dataset& testing){
         testing.load_one();
     }
     std::cout << "hit: " << hit << " miss: " << miss << std::endl;
-    std::cout << "ratio: " << ((double)hit/10000)*100 << '%' << std::endl;
-    double best = read_master_best();
-    if(((double)hit/10000)*100 > best){
+    std::cout << "ratio: " << ((float)hit/10000)*100 << '%' << std::endl;
+    float best = read_master_best();
+    if(((float)hit/10000)*100 > best){
         write_to_master();
     }
     logfile << "hit: " << hit << " miss: " << miss << std::endl;
-    logfile << "ratio: " << ((double)hit/10000)*100 << '%' << std::endl;
+    logfile << "ratio: " << ((float)hit/10000)*100 << '%' << std::endl;
     logfile.close();
 }
 
