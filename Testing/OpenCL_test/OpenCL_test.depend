@@ -1,0 +1,17 @@
+# depslib dependency file v1.0
+1532972663 source:c:\users\niko\desktop\prog\opencl_test\opencl_test\src\kernelfunctor.cpp
+	"KernelFunctor.h"
+	"vector"
+	"iostream"
+	"stdlib.h"
+	"fstream"
+	"cstdarg"
+
+1532970392 c:\users\niko\desktop\prog\opencl_test\opencl_test\include\kernelfunctor.h
+	<CL/cl2.hpp>
+
+1532972490 source:c:\users\niko\desktop\prog\opencl_test\opencl_test\main.cpp
+	<iostream>
+	"KernelFunctor.h"
+	"vector"
+
