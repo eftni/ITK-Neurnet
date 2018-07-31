@@ -1,4 +1,4 @@
-#include "KernelFunctor.h"
+#include "..//include//KernelFunctor.h"
 #include "vector"
 #include "iostream"
 #include "stdlib.h"

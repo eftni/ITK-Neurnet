@@ -15,3 +15,22 @@
 	"KernelFunctor.h"
 	"vector"
 
+1533051422 source:c:\users\niko\desktop\prog\neurnet\testing\opencl_test\src\kernelfunctor.cpp
+	"..//include//KernelFunctor.h"
+	"vector"
+	"iostream"
+	"stdlib.h"
+	"fstream"
+	"cstdarg"
+
+1532970392 c:\users\niko\desktop\prog\neurnet\testing\opencl_test\\include\\kernelfunctor.h
+	<CL/cl2.hpp>
+
+1533055825 source:c:\users\niko\desktop\prog\neurnet\testing\opencl_test\main.cpp
+	<iostream>
+	"include//KernelFunctor.h"
+	"vector"
+
+1532970392 c:\users\niko\desktop\prog\neurnet\testing\opencl_test\include\\kernelfunctor.h
+	<CL/cl2.hpp>
+
