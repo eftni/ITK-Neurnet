@@ -94,46 +94,37 @@ std::vector<float> gen_target(int vect_size, int label){
     return temp;
 }
 
-void setvalue(std::vector<std::vector<std::vector<float>>>& mat, float val){  //PRIMITIVE - REPLACE ASAP
-    for(std::vector<std::vector<float>>& vv : mat){
-        for(std::vector<float>& v : vv){
-            for(float& d : v){
-                d = val;
-            }
-        }
+void setvalue(std::vector<float>& mat, float val){
+    for(size_t i = 0; i < mat.size(); ++i){
+        mat[i] = val;
     }
 }
 
-void operator+=(std::vector<float>& outputs, const std::vector<float>& biases){ //PRIMITIVE - REPLACE ASAP
+template<typename T>
+void setvalue(std::vector<T>& mat, float val){
+    for(size_t i = 0; i < mat.size(); ++i){
+        setvalue(mat[i], val);
+    }
+}
+
+
+void operator+=(std::vector<float>& outputs, const std::vector<float>& biases){
     for(size_t i = 0; i < outputs.size(); ++i){
         outputs[i] += biases[i];
     }
 }
 
-void operator-=(std::vector<std::vector<std::vector<float>>>& w, const std::vector<std::vector<std::vector<float>>>& update){ //PRIMITIVE - REPLACE ASAP
+template<typename T>
+void operator-=(std::vector<T>& w, const std::vector<T>& update){
     for(size_t i = 0; i < w.size(); ++i){
-        for(size_t j = 0; j < w[i].size(); ++j){
-            for(size_t k = 0; k < w[i][j].size(); ++k){
-                w[i][j][k] -= update[i][j][k];
-            }
-        }
+        w[i] -= update[i];
     }
 }
 
-std::vector<float> operator/(std::vector<float> v, float d){ //PRIMITIVE - REPLACE ASAP
-    for(size_t i = 0; i < v.size(); ++i){
-        v[i] = v[i]/d;
-    }
-    return v;
-}
-
-std::vector<std::vector<std::vector<float>>> operator/(std::vector<std::vector<std::vector<float>>>& w, float d){ //PRIMITIVE - REPLACE ASAP
+template<typename T>
+std::vector<T> operator/(std::vector<T>& w, float d){
     for(size_t i = 0; i < w.size(); ++i){
-        for(size_t j = 0; j < w[i].size(); ++j){
-            for(size_t k = 0; k < w[i][j].size(); ++k){
-                w[i][j][k] = w[i][j][k]/d;
-            }
-        }
+        w[i] = w[i]/d;
     }
     return w;
 }

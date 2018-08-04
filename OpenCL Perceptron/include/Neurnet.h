@@ -6,13 +6,13 @@
 #include "iostream"
 #include "Dataset.h"
 #include "Layer.h"
-#include <CL/cl2.hpp>
+#include "KernelFunctor.h"
 
 class Neurnet
 {
     public:
         Neurnet();
-        Neurnet(std::vector<Layer> layers, float learnrate, std::vector<std::random_device::result_type> rs = {0,0,0,0,0,0,0,0});
+        Neurnet(std::vector<Layer> layers, float learnrate, KernelFunctor* fp_ker, KernelFunctor* bp_ker, std::vector<std::random_device::result_type> rs = {0,0,0,0,0,0,0,0});
         virtual ~Neurnet();
 
         /**
@@ -21,14 +21,14 @@ class Neurnet
         */
         std::vector<std::random_device::result_type> get_seed(){return randgen_seeds;}
 
-        void Neurnet::create_buffers();
+        void create_buffers(cl::Context c);
 
         /**
         * Performs forward propoagation on the currently loaded image.
         * @param image The current image
         * @return The inputs and outputs of every neuron
         */
-        std::pair<std::vector<std::vector<float>>, std::vector<std::vector<float>>> forprop(std::vector<std::vector<uint8_t>> image);
+        std::pair<std::vector<std::vector<float>>, std::vector<std::vector<float>>> forprop(std::vector<uint8_t> image);
 
         /**
         * Performs backpropagation training using a set of outputs from a forward pass
@@ -52,7 +52,7 @@ class Neurnet
         * @param label The number the current image represents
         * @param image The currently loaded image
         */
-        void single_pass(uint8_t label, const std::vector<std::vector<uint8_t>>& image);
+        void single_pass(uint8_t label, const std::vector<uint8_t>& image);
 
         /**
         * Performs a single forward propagation and trains the network based on the output
@@ -61,7 +61,7 @@ class Neurnet
         * @param weights_update The total sum of weight updates in a batch. (Required due to batch implementation)
         * @return The total error value of the output
         */
-        float train_pass(uint8_t label, std::vector<std::vector<uint8_t>> image, std::vector<std::vector<std::vector<float>>>& weights_update);
+        float train_pass(uint8_t label, std::vector<uint8_t> image, std::vector<std::vector<std::vector<float>>>& weights_update);
 
         /**
         * Trains the network using one entire dataset
@@ -85,13 +85,15 @@ class Neurnet
     protected:
 
     private:
-        std::vector<cl::buffer> input_buffers, output_buffers;
-        cl::buffer weight_buffer;
         float learning_rate; //!< Coefficient for weight adjustment "eta"
         std::vector<std::random_device::result_type> randgen_seeds; //!< Seeds used in mersenne twister for reproducibility
         std::vector<std::vector<std::vector<float>>> weights; //!< Weights between neurons
         std::vector<std::vector<float>> biases;
         std::vector<Layer> n_layers;
+        std::vector<cl::Buffer> input_buffers, output_buffers;
+        cl::Buffer weight_buffer;
+        KernelFunctor forprop_kernel;
+        KernelFunctor backprop_kernel;
         unsigned int hit; //!< Number of pictures guessed correctly
         unsigned int miss; //!< Number of pictures guessed incorrectly
         std::ofstream logfile; //!< Logfile for training and testing

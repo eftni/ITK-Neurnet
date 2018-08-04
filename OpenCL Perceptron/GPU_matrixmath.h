@@ -3,44 +3,7 @@
 #include "KernelFunctor.h"
 
 
-size_t sum_weight_elements(const std::vector<std::vector<std::vector<float>>>& weights){
-    int sum = 0;
-    for(std::vector<std::vector<float>> vv : weights){
-        sum += vv.size()*vv[0].size();
-    }
-    return sum;
-}
 
-void create_buffers(const std::vector<std::vector<std::vector<float>>>& weights){
-    weight_buffer = cl::Buffer(def_device_context, CL_MEM_READ_ONLY, sizeof(float)*sum_weight_elements(weights));
-    input_buffer.push_back(cl::Buffer(def_device_context, CL_MEM_READ_ONLY, sizeof(float)*weights[0].size()));
-    output_buffer.push_back(cl::Buffer(def_device_context, CL_MEM_READ_ONLY, sizeof(float)*weights[0].size()))
-    for(int i = 0; i < weights.size(); ++i){
-        input_buffer.push_back(cl::Buffer(def_device_context, CL_MEM_READ_WRITE, sizeof(float)*weights[i][0].size()));
-        output_buffers.push_back(cl::Buffer(def_device_context, CL_MEM_READ_WRITE, sizeof(float)*weights[i][0].size()));
-    }
-}
-
-std::pair<std::vector<std::vector<float>>, std::vector<std::vector<float>>> forprop(Neurnet& network, std::vector<std::vector<uint8_t>> image){
-    std::vector<float> temp = mat_to_row(image);
-    std::pair<std::vector<std::vector<float>>,std::vector<std::vector<float>>> ins_outs; //Pair of inputs and outputs for every neuron
-    std::vector<std::vector<float>> inputs;
-    std::vector<std::vector<float>> outputs;
-    temp = temp/255; //Input normalization
-    //temp += biases[0];
-    inputs.push_back(temp);
-    activate_choice(temp, network.n_layers[0].activator);
-    outputs.push_back(temp);
-    for(size_t i = 0; i < network.weights.size(); ++i){
-        temp = matrix_mult(temp, network.weights[i]);
-        //temp += biases[i+1];
-        inputs.push_back(temp);
-        activate_choice(temp, network.n_layers[i+1].activator);
-        outputs.push_back(temp);
-    }
-    ins_outs = {inputs, outputs};
-    return ins_outs;
-}
 
 std::vector<std::vector<float>> calc_deltas(Neurnet& network, std::vector<float> target, const std::pair<std::vector<std::vector<float>>, std::vector<std::vector<float>>>& ins_outs){
     std::vector<std::vector<float>> deltas(ins_outs.second.size(), std::vector<float>(1,0));

@@ -32,7 +32,9 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="include/KernelFunctor.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="src/KernelFunctor.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

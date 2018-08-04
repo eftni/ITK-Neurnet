@@ -133,7 +133,7 @@ void Neurnet::backprop(std::vector<float> target, const std::pair<std::vector<st
     for(size_t z = 0; z < weights.size(); ++z){
         for(size_t y = 0; y < weights[z].size(); ++y){
             for(size_t x = 0; x < weights[z][y].size(); ++x){
-                weights_update[z][y][x] += learning_rate*ins_outs.first[z][y]*deltas[z+1][x];      ///REWRITE FOR MATRIXMATH
+                weights_update[z][y][x] += learning_rate*ins_outs.second[z][y]*deltas[z+1][x];      ///REWRITE FOR MATRIXMATH
             }
         }
     }

@@ -2,12 +2,13 @@
 #include "random"
 #include "iostream"
 #include "functional"
-#include "..\\GPU_matrixmath.h"
+#include "..\\matrixmath.h"
 #include "time.h"
 #include "stdio.h"
 #include "math.h"
 #include "fstream"
 #include "sstream"
+
 
 Neurnet::Neurnet(){
 
@@ -47,18 +48,26 @@ std::function<float()> get_randgen(std::vector<std::random_device::result_type>&
     return randgen1;
 }
 
-void Neurnet::create_buffers(){
-    weight_buffer = cl::Buffer(def_device_context, CL_MEM_READ_ONLY, sizeof(float)*sum_weight_elements(weights));
-    input_buffer.push_back(cl::Buffer(def_device_context, CL_MEM_READ_ONLY, sizeof(float)*weights[0].size()));
-    output_buffer.push_back(cl::Buffer(def_device_context, CL_MEM_READ_ONLY, sizeof(float)*weights[0].size()))
-    for(int i = 0; i < weights.size(); ++i){
-        input_buffer.push_back(cl::Buffer(def_device_context, CL_MEM_READ_WRITE, sizeof(float)*weights[i][0].size()));
-        output_buffers.push_back(cl::Buffer(def_device_context, CL_MEM_READ_WRITE, sizeof(float)*weights[i][0].size()));
+size_t sum_weight_elements(const std::vector<std::vector<std::vector<float>>>& weights){
+    size_t acc = 0;
+    for(std::vector<std::vector<float>> vv : weights){
+        acc += vv.size()*vv[0].size();
+    }
+    return acc;
+}
+
+void Neurnet::create_buffers(cl::Context c){
+    weight_buffer = cl::Buffer(c, CL_MEM_READ_ONLY, sizeof(float)*sum_weight_elements(weights));
+    input_buffers.push_back(cl::Buffer(c, CL_MEM_READ_ONLY, sizeof(float)*weights[0].size()));
+    output_buffers.push_back(cl::Buffer(c, CL_MEM_READ_ONLY, sizeof(float)*weights[0].size()));
+    for(size_t i = 0; i < weights.size(); ++i){
+        input_buffers.push_back(cl::Buffer(c, CL_MEM_READ_WRITE, sizeof(float)*weights[i][0].size()));
+        output_buffers.push_back(cl::Buffer(c, CL_MEM_READ_WRITE, sizeof(float)*weights[i][0].size()));
     }
 }
 
 
-Neurnet::Neurnet(std::vector<Layer> layers, float learnrate, std::vector<std::random_device::result_type> rs) :
+Neurnet::Neurnet(std::vector<Layer> layers, float learnrate, KernelFunctor fp_ker, KernelFunctor bp_ker, std::vector<std::random_device::result_type> rs) :
 learning_rate(learnrate),
 randgen_seeds(rs),
 weights(layers.size()-1, std::vector<std::vector<float>>(1, std::vector<float>(1,0))),
@@ -78,6 +87,9 @@ logfile("Log001.txt")
             }
         }
     }
+    forprop_kernel = fp_ker;
+    backprop_kernel = bp_ker;
+    create_buffers(forprop_kernel.get_context());
 
     for(size_t i = 0; i < layers.size(); ++i){
         biases[i] = std::vector<float>(layers[i].n_number, 0);
@@ -93,14 +105,18 @@ Neurnet::~Neurnet()
     //dtor
 }
 
-std::pair<std::vector<std::vector<float>>, std::vector<std::vector<float>>> Neurnet::forprop(std::vector<std::vector<uint8_t>> image){
-    std::vector<float> temp = mat_to_row(image);
+std::pair<std::vector<std::vector<float>>, std::vector<std::vector<float>>> Neurnet::forprop(std::vector<uint8_t> image){
     std::pair<std::vector<std::vector<float>>,std::vector<std::vector<float>>> ins_outs; //Pair of inputs and outputs for every neuron
     std::vector<std::vector<float>> inputs;
     std::vector<std::vector<float>> outputs;
+    std::vector<float> temp(image.size(), 0);
+    for(size_t i = 0; i < image.size(); ++i){
+        temp[i] = image[i];
+    }
     temp = temp/255; //Input normalization
     //temp += biases[0];
-    inputs.push_back(temp);
+    //inputs.push_back(temp);
+    forprop_kernel.c_queue.enqueueWriteBuffer(input_buffers[0], CL_FALSE, 0, sizeof(float)*temp.size(), &temp[0]);
     activate_choice(temp, n_layers[0].activator);
     outputs.push_back(temp);
     for(size_t i = 0; i < weights.size(); ++i){
@@ -193,7 +209,7 @@ float calc_total_error(uint8_t target, std::vector<float> actual){
     return err_tot;
 }
 
-void Neurnet::single_pass(uint8_t label, const std::vector<std::vector<uint8_t>>& image){
+void Neurnet::single_pass(uint8_t label, const std::vector<uint8_t>& image){
     std::vector<std::vector<float>> outputs = forprop(image).second;
     if(out_check(label, outputs.back())){
         ++hit;
@@ -202,7 +218,7 @@ void Neurnet::single_pass(uint8_t label, const std::vector<std::vector<uint8_t>>
     }
 }
 
-float Neurnet::train_pass(uint8_t label, std::vector<std::vector<uint8_t>> image, std::vector<std::vector<std::vector<float>>>& weights_update){
+float Neurnet::train_pass(uint8_t label, std::vector<uint8_t> image, std::vector<std::vector<std::vector<float>>>& weights_update){
     const std::pair<std::vector<std::vector<float>>, std::vector<std::vector<float>>>& ins_outs = forprop(image);
     std::vector<float> target = gen_target(10, label);
     backprop(target, ins_outs, weights_update);

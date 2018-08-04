@@ -20,6 +20,10 @@ class KernelFunctor
         template<typename... Targs>
         void operator()(cl::NDRange offset, cl::NDRange threads, cl::NDRange workgroups, Targs... kargs);
 
+        cl::Context get_context(){return def_device_context;}
+
+        cl::CommandQueue c_queue;
+
     protected:
 
     private:
@@ -28,7 +32,6 @@ class KernelFunctor
         cl::Context def_device_context;
         cl::Program::Sources kernel_code;
         cl::Program kernel_program;
-        cl::CommandQueue c_queue;
         cl::Kernel def_kernel;
         std::string fetch_kernel_code(std::string fname);
 };

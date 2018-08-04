@@ -1,15 +1,11 @@
 #include <iostream>
 #include "Dataset.h"
-#define USE_GPU_
-#ifdef USE_GPU_
-    #include "NeurGPU.h"
-    #else
-    #include "Neurnet.h"
-#endif // USE_GPU_
+#include "Neurnet.h"
 #include "random"
 #include "functional"
 #include "math.h"
 #include "chrono"
+#include "KernelFunctor.h"
 
 int main()
 {
@@ -19,6 +15,8 @@ int main()
     layers.push_back(Layer(16, hyp_tan));
     layers.push_back(Layer(16, hyp_tan));
     layers.push_back(Layer(10, hyp_tan));
+    KernelFunctor forprop_kernel("matrixmult.cl");
+    KernelFunctor backprop_kernel("backprop.cl");
     /*while(true){
         Neurnet net(layers, 0.2);
         int epochs = 10;

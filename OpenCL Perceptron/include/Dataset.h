@@ -31,7 +31,7 @@ class Dataset
         * Returns the image currently stored
         * @return A array of 8bit integers
         */
-        std::vector<std::vector<uint8_t>> get_im(){return curr_im;}
+        std::vector<uint8_t> get_im(){return curr_im;}
 
         /**
         * Returns what number the current image represents
@@ -64,7 +64,7 @@ class Dataset
         uint32_t sizex; //!< Size of images along the x axis
         uint32_t sizey; //!< Size of images along the y axis
         size_t index; //!< Number of current image
-        std::vector<std::vector<uint8_t>> curr_im; //!< Current image in matrix form
+        std::vector<uint8_t> curr_im; //!< Current image in matrix form
         uint8_t curr_label; //!< Current label
 };
 

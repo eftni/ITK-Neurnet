@@ -45,12 +45,12 @@ Dataset::~Dataset()
 
 void Dataset::load_one(){
     ++index;
-    std::vector<std::vector<uint8_t>> temp(sizey, std::vector<uint8_t>(sizex, 0));
+    std::vector<uint8_t> temp(sizey*sizex, 0);
     for(size_t y = 0; y < sizey; ++y){
         for(size_t x = 0; x < sizex; ++x){
             uint8_t c = 0;
             fin_im.read(reinterpret_cast<char *>(&c), sizeof(c));
-            temp[x][y] = c;
+            temp[x*sizex+y] = c;
         }
     }
     curr_im = temp;
