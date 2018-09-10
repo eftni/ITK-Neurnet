@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1534617116 source:c:\users\niko\desktop\test\opencl_test2\opencl_test2\main.cpp
+	<iostream>
+	<CL/cl2.hpp>
+	"fstream"
+	"math.h"
+
