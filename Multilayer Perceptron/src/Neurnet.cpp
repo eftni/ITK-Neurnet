@@ -110,7 +110,7 @@ std::vector<std::vector<float>> Neurnet::calc_deltas(std::vector<float> target, 
         if(i == ins_outs.second.size()-1){
             std::vector<float> layer_deltas(ins_outs.second[i].size(), 0);
             for(size_t j = 0; j < ins_outs.second[i].size(); ++j){
-                layer_deltas[j] = -(target[j]-ins_outs.second[i][j])*derive(derivative, ins_outs.second[i][j]); //Review
+                layer_deltas[j] = -(target[j]-ins_outs.second[i][j])*derive(derivative, ins_outs.second[i][j]); //Review - derivative using outputs
             }
             deltas[i] = layer_deltas;
         }else{

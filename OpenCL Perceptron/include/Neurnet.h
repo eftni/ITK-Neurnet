@@ -12,7 +12,7 @@ class Neurnet
 {
     public:
         Neurnet();
-        Neurnet(std::vector<Layer> layers, float learnrate, KernelFunctor* fp_ker, KernelFunctor* bp_ker, std::vector<std::random_device::result_type> rs = {0,0,0,0,0,0,0,0});
+        Neurnet(std::vector<Layer> layers, float learnrate, size_t batch, KernelFunctor fp_ker, KernelFunctor delta_ker, KernelFunctor bp_ker, std::vector<std::random_device::result_type> rs = {0,0,0,0,0,0,0,0});
         virtual ~Neurnet();
 
         /**
@@ -28,7 +28,15 @@ class Neurnet
         * @param image The current image
         * @return The inputs and outputs of every neuron
         */
-        std::pair<std::vector<std::vector<float>>, std::vector<std::vector<float>>> forprop(std::vector<uint8_t> image);
+        void forprop(std::vector<uint8_t> images);
+
+        /**
+        * Calculates the deltas (neuron-output-independent components of a weight update) for every neuron
+        * @param target The expected output on the final layer. Genrated by gen_target() in matrixmath.h
+        * @param outputs The outputs of every neuron in the network
+        * @return The deltas of every neuron in the network
+        */
+        void calc_deltas(std::vector<uint8_t> targets);
 
         /**
         * Performs backpropagation training using a set of outputs from a forward pass
@@ -37,22 +45,14 @@ class Neurnet
         * @param output The outputs of every neuron in the network
         * @param weights_update The total sum of weight updates in a batch. (Required due to batch implementation)
         */
-        void backprop(std::vector<float> target, const std::pair<std::vector<std::vector<float>>, std::vector<std::vector<float>>>& ins_outs, std::vector<std::vector<std::vector<float>>>& weights_update);
-
-        /**
-        * Calculates the deltas (neuron-output-independent components of a weight update) for every neuron
-        * @param target The expected output on the final layer. Genrated by gen_target() in matrixmath.h
-        * @param outputs The outputs of every neuron in the network
-        * @return The deltas of every neuron in the network
-        */
-        std::vector<std::vector<float>> calc_deltas(std::vector<float> target, const std::pair<std::vector<std::vector<float>>, std::vector<std::vector<float>>>& ins_outs);
+        void backprop(std::vector<uint8_t> targets);
 
         /**
         * Performs a single forward propagation and check if the output is correct
         * @param label The number the current image represents
         * @param image The currently loaded image
         */
-        void single_pass(uint8_t label, const std::vector<uint8_t>& image);
+        void single_pass(std::pair<std::vector<uint8_t>, std::vector<uint8_t>> im_lab);
 
         /**
         * Performs a single forward propagation and trains the network based on the output
@@ -61,14 +61,14 @@ class Neurnet
         * @param weights_update The total sum of weight updates in a batch. (Required due to batch implementation)
         * @return The total error value of the output
         */
-        float train_pass(uint8_t label, std::vector<uint8_t> image, std::vector<std::vector<std::vector<float>>>& weights_update);
+        float train_pass(std::pair<std::vector<uint8_t>, std::vector<uint8_t>> im_lab);
 
         /**
         * Trains the network using one entire dataset
         * @param training The dataset containing the training images and labels
         * @param batchsize The number of images to be processed and averaged before an update
         */
-        void train_net(Dataset& training, int batchsize);
+        void train_net(Dataset& training);
 
         /**
         * Writes the properties of the network to the master file.
@@ -86,14 +86,14 @@ class Neurnet
 
     private:
         float learning_rate; //!< Coefficient for weight adjustment "eta"
+        size_t batch_size;
         std::vector<std::random_device::result_type> randgen_seeds; //!< Seeds used in mersenne twister for reproducibility
-        std::vector<std::vector<std::vector<float>>> weights; //!< Weights between neurons
+        //std::vector<std::vector<std::vector<float>>> weights; //!< Weights between neurons
+        std::vector<std::vector<float>> weights;
         std::vector<std::vector<float>> biases;
         std::vector<Layer> n_layers;
-        std::vector<cl::Buffer> input_buffers, output_buffers;
-        cl::Buffer weight_buffer;
-        KernelFunctor forprop_kernel;
-        KernelFunctor backprop_kernel;
+        std::vector<cl::Buffer> input_buffers, output_buffers, delta_buffers, w_buffers, w_update_buffers;
+        KernelFunctor forprop_kernel, delta_kernel, backprop_kernel;
         unsigned int hit; //!< Number of pictures guessed correctly
         unsigned int miss; //!< Number of pictures guessed incorrectly
         std::ofstream logfile; //!< Logfile for training and testing

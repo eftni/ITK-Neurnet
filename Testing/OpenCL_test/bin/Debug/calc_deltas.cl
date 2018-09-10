@@ -14,8 +14,7 @@ float derive(float x, const unsigned int act_func){
 void kernel calc_deltas(int first, const global float* inputs, const global float* outputs, const global float* weights, const int wsize, const global float* target, const unsigned int act_func, const global float* deltas_prev, global float* deltas_next){
 	if(first == 0){
 		const int row_count = get_global_id(0);
-		//deltas_next[row_count] = -(target[row_count]-outputs[row_count])*derive(inputs[row_count], act_func);
-		deltas_next[row_count] = row_count;
+		deltas_next[row_count] = -(target[row_count]-outputs[row_count])*derive(inputs[row_count], act_func);
 	}else{
 		const int row_count = get_global_id(0);
 		float acc = 0.0f;

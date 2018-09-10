@@ -59,6 +59,24 @@ void Dataset::load_one(){
     curr_label = c;
 }
 
+std::pair<std::vector<uint8_t>, std::vector<uint8_t>> Dataset::load_batch(size_t batch_size){
+    std::pair<std::vector<uint8_t>, std::vector<uint8_t>> im_lab; //Rewrite for float
+    for(size_t i = 0; i < batch_size; ++i){
+        ++index;
+        for(size_t y = 0; y < sizey; ++y){
+            for(size_t x = 0; x < sizex; ++x){
+                uint8_t c = 0;
+                fin_im.read(reinterpret_cast<char *>(&c), sizeof(c));
+                im_lab.first.push_back(c);
+            }
+        }
+        uint8_t c = 0;
+        fin_lab.read(reinterpret_cast<char *>(&c), sizeof(c));
+        im_lab.second.push_back(c);
+    }
+    return im_lab;
+}
+
 std::pair<uint32_t, uint32_t> Dataset::get_size(){
     return std::make_pair(sizex, sizey);
 }

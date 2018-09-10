@@ -21,6 +21,8 @@ class Dataset
         */
         void load_one();
 
+        std::pair<std::vector<uint8_t>, std::vector<uint8_t>> load_batch(size_t batch_size);
+
         /**
         * Returns the size of the current image
         * @return A pair containing the lenght and width

@@ -5,7 +5,7 @@
 
 enum act_func_type {identity = 0, sigmoid = 1, hyp_tan = 2};
 
-class Layer
+struct Layer
 {
     public:
         Layer();

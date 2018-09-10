@@ -8,15 +8,17 @@ float activate(float x, const unsigned int act_func){
 		case 1: return sigmoid(x);
 		case 2: return tanh(x);
 	}
+	return 0;
 }
 
 
+
 void kernel forprop(global const float* input, global const float* w, const unsigned int wsize, global float* output, const unsigned int act_func, global float* act_output){
-   const int row_count = get_global_id(0);
-   float acc = 0.0f;
-   for(int i = 0; i < wsize; ++i){
-       acc += input[i] * w[row_count*wsize + i];
-   }
-   output[row_count] = acc;
-   act_output[row_count] = activate(acc, act_func);
+	const int output_index = get_global_id(0);
+	float acc = 0.0f;
+	for(int i = 0; i < wsize; ++i){
+		acc += input[i] * w[output_index*wsize + i];
+	}
+	output[output_index] = acc;
+	act_output[output_index] = activate(acc, act_func);
 };

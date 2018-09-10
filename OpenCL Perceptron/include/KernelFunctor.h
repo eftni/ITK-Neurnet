@@ -12,17 +12,27 @@ class KernelFunctor
         virtual ~KernelFunctor();
 
         template<typename T>
-        void set_argument(int num, T arg);
+        void set_argument(int num, T arg){
+            def_kernel.setArg(num, arg);
+        }
 
         template<typename T, typename... Targs>
-        void set_argument(int num, T first, Targs... Args);
+        void set_argument(int num, T first, Targs... args){
+            def_kernel.setArg(num, first);
+            set_argument(num+1, args...);
+        }
 
         template<typename... Targs>
-        void operator()(cl::NDRange offset, cl::NDRange threads, cl::NDRange workgroups, Targs... kargs);
+        void operator()(cl::NDRange offset, cl::NDRange threads, cl::NDRange workgroups, Targs... kargs){
+            set_argument(0, kargs...);
+            c_queue.enqueueNDRangeKernel(def_kernel, offset, threads, workgroups);
+            c_queue.finish(); //Finishing slows execution down significantly
+        }
 
         cl::Context get_context(){return def_device_context;}
 
         cl::CommandQueue c_queue;
+        size_t max_work_group_size;
 
     protected:
 

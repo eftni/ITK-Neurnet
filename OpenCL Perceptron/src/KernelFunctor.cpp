@@ -1,4 +1,4 @@
-#include "KernelFunctor.h"
+#include "..//include//KernelFunctor.h"
 #include "vector"
 #include "iostream"
 #include "stdlib.h"
@@ -45,7 +45,8 @@ KernelFunctor::KernelFunctor(std::string fname)
         exit(6);
     }
     c_queue = cl::CommandQueue({def_device_context, def_device});
-    def_kernel = cl::Kernel(kernel_code, fname.substr(0, fname.length()-2).c_str());
+    def_kernel = cl::Kernel(kernel_program, fname.substr(0, fname.length()-3).c_str());
+    def_kernel.getWorkGroupInfo(def_device, CL_KERNEL_WORK_GROUP_SIZE, &max_work_group_size);
 }
 
 KernelFunctor::~KernelFunctor()
@@ -53,23 +54,7 @@ KernelFunctor::~KernelFunctor()
     //dtor
 }
 
-template<typename T>
-void KernelFunctor::set_argument(int num, T arg){
-    def_kernel.setArg(num, arg);
-}
 
-template<typename T, typename... Targs>
-void KernelFunctor::set_argument(int num, T first, Targs... args){
-    def_kernel.setArg(num, first);
-    set_argument(num+1, args...);
-}
-
-template<typename... Targs>
-void KernelFunctor::operator()(cl::NDRange offset, cl::NDRange threads, cl::NDRange workgroups, Targs... kargs){
-    set_argument(0, kargs...);
-    c_queue.enqueueNDRangeKernel(def_kernel, offset, threads, workgroups);
-    c_queue.finish();
-}
 
 
 

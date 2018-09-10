@@ -25,8 +25,10 @@ class KernelFunctor
         template<typename... Targs>
         void operator()(cl::NDRange offset, cl::NDRange threads, cl::NDRange workgroups, Targs... kargs){
             set_argument(0, kargs...);
-            c_queue.enqueueNDRangeKernel(def_kernel, offset, threads, workgroups);
-            c_queue.finish();
+            cl::Event execution;
+            c_queue.enqueueNDRangeKernel(def_kernel, offset, threads, workgroups, nullptr, &execution);
+            execution.wait();
+            //c_queue.finish();
         }
 
         cl::Context get_context(){return def_device_context;}

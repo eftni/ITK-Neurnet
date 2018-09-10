@@ -34,12 +34,12 @@
 1532970392 c:\users\niko\desktop\prog\neurnet\testing\opencl_test\include\\kernelfunctor.h
 	<CL/cl2.hpp>
 
-1533404357 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\testing\opencl_test\main.cpp
+1533642618 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\testing\opencl_test\main.cpp
 	<iostream>
 	"include//KernelFunctor.h"
 	"vector"
 
-1533059589 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\testing\opencl_test\include\\kernelfunctor.h
+1533643272 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\testing\opencl_test\include\\kernelfunctor.h
 	<CL/cl2.hpp>
 
 1533059589 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\testing\opencl_test\src\kernelfunctor.cpp
@@ -50,6 +50,6 @@
 	"fstream"
 	"cstdarg"
 
-1533059589 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\testing\opencl_test\\include\\kernelfunctor.h
+1533643312 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\testing\opencl_test\\include\\kernelfunctor.h
 	<CL/cl2.hpp>
 
