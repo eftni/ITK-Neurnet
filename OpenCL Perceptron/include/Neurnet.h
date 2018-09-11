@@ -6,7 +6,7 @@
 #include "iostream"
 #include "Dataset.h"
 #include "Layer.h"
-#include <CL/cl2.hpp>
+#include "KernelFunctor.h"
 
 class Neurnet
 {
@@ -21,7 +21,7 @@ class Neurnet
         */
         std::vector<std::random_device::result_type> get_seed(){return randgen_seeds;}
 
-        void Neurnet::create_buffers();
+        void create_buffers();
 
         /**
         * Performs forward propoagation on the currently loaded image.
@@ -85,8 +85,8 @@ class Neurnet
     protected:
 
     private:
-        std::vector<cl::buffer> input_buffers, output_buffers;
-        cl::buffer weight_buffer;
+        std::vector<cl::Buffer> input_buffers, output_buffers;
+        cl::Buffer weight_buffer;
         float learning_rate; //!< Coefficient for weight adjustment "eta"
         std::vector<std::random_device::result_type> randgen_seeds; //!< Seeds used in mersenne twister for reproducibility
         std::vector<std::vector<std::vector<float>>> weights; //!< Weights between neurons

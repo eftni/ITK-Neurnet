@@ -2,12 +2,13 @@
 #include "random"
 #include "iostream"
 #include "functional"
-#include "..\\GPU_matrixmath.h"
+#include "..\\matrixmath.h"
 #include "time.h"
 #include "stdio.h"
 #include "math.h"
 #include "fstream"
 #include "sstream"
+#include "KernelFunctor.h"
 
 Neurnet::Neurnet(){
 
@@ -47,7 +48,7 @@ std::function<float()> get_randgen(std::vector<std::random_device::result_type>&
     return randgen1;
 }
 
-void Neurnet::create_buffers(){
+/*void Neurnet::create_buffers(){
     weight_buffer = cl::Buffer(def_device_context, CL_MEM_READ_ONLY, sizeof(float)*sum_weight_elements(weights));
     input_buffer.push_back(cl::Buffer(def_device_context, CL_MEM_READ_ONLY, sizeof(float)*weights[0].size()));
     output_buffer.push_back(cl::Buffer(def_device_context, CL_MEM_READ_ONLY, sizeof(float)*weights[0].size()))
@@ -55,7 +56,7 @@ void Neurnet::create_buffers(){
         input_buffer.push_back(cl::Buffer(def_device_context, CL_MEM_READ_WRITE, sizeof(float)*weights[i][0].size()));
         output_buffers.push_back(cl::Buffer(def_device_context, CL_MEM_READ_WRITE, sizeof(float)*weights[i][0].size()));
     }
-}
+}*/
 
 
 Neurnet::Neurnet(std::vector<Layer> layers, float learnrate, std::vector<std::random_device::result_type> rs) :

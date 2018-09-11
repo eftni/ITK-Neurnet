@@ -296,3 +296,70 @@
 	"fstream"
 	"sstream"
 
+1532967736 source:c:\users\niko\desktop\prog\neurnet\opencl perceptron\src\dataset.cpp
+	"Dataset.h"
+
+1532967736 c:\users\niko\desktop\prog\neurnet\opencl perceptron\include\dataset.h
+	"vector"
+	"utility"
+	"stdint.h"
+	"fstream"
+	"stdlib.h"
+	"iostream"
+
+1532967736 source:c:\users\niko\desktop\prog\neurnet\opencl perceptron\src\layer.cpp
+	"Layer.h"
+	"utility"
+	"iostream"
+	"stdlib.h"
+
+1532967736 c:\users\niko\desktop\prog\neurnet\opencl perceptron\include\layer.h
+	"functional"
+	"math.h"
+
+1532967736 source:c:\users\niko\desktop\prog\neurnet\opencl perceptron\src\kernelfunctor.cpp
+	"KernelFunctor.h"
+	"vector"
+	"iostream"
+	"stdlib.h"
+	"fstream"
+	"cstdarg"
+
+1532967736 c:\users\niko\desktop\prog\neurnet\opencl perceptron\include\kernelfunctor.h
+	<CL/cl2.hpp>
+
+1532968051 source:c:\users\niko\desktop\prog\neurnet\opencl perceptron\main.cpp
+	<iostream>
+	"Dataset.h"
+	"Neurnet.h"
+	"random"
+	"functional"
+	"math.h"
+	"chrono"
+	"KernelFunctor.h"
+
+1532968079 c:\users\niko\desktop\prog\neurnet\opencl perceptron\include\neurnet.h
+	"vector"
+	"functional"
+	"random"
+	"iostream"
+	"Dataset.h"
+	"Layer.h"
+	"KernelFunctor.h"
+
+1532968098 source:c:\users\niko\desktop\prog\neurnet\opencl perceptron\src\neurnet.cpp
+	"Neurnet.h"
+	"random"
+	"iostream"
+	"functional"
+	"..\\matrixmath.h"
+	"time.h"
+	"stdio.h"
+	"math.h"
+	"fstream"
+	"sstream"
+	"KernelFunctor.h"
+
+1532967736 c:\users\niko\desktop\prog\neurnet\opencl perceptron\\matrixmath.h
+	"math.h"
+

@@ -1,15 +1,11 @@
 #include <iostream>
 #include "Dataset.h"
-#define USE_GPU_
-#ifdef USE_GPU_
-    #include "NeurGPU.h"
-    #else
-    #include "Neurnet.h"
-#endif // USE_GPU_
+#include "Neurnet.h"
 #include "random"
 #include "functional"
 #include "math.h"
 #include "chrono"
+#include "KernelFunctor.h"
 
 int main()
 {
