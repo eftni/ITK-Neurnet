@@ -29,6 +29,8 @@ void kernel calc_deltas(int first, const global float* inputs, const global floa
 		float acc = 0.0f;
 		for(int i = 0; i < deltas_prev_size; ++i){
 			acc += deltas_prev[batch_element*deltas_prev_size + i]*weights[i*wsize+output_index];
+			printf("%s%f%s%f\n", "Deltas_prev: ", deltas_prev[batch_element*deltas_prev_size + i], " weight: ", weights[i*wsize+output_index]);
+			printf("%s%f\n", "Real weight?: ", weights[i*output_size+wsize]);
 		}
 		deltas_next[batch_element*output_size + output_index] = acc*derive(outputs[batch_element*output_size + output_index], act_func);
 	}

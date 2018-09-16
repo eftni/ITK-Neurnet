@@ -99,6 +99,7 @@ void calc_deltas(bool first, int target, std::vector<float> outputs, std::vector
             float acc = 0;
             for(int j = 0; j < deltas_prev.size(); ++j){
                 acc += deltas_prev[j]*w[j*deltas_next.size() + i];
+                std::cout << "Deltas_prev: " << deltas_prev[j] << " Weight: " << w[j*deltas_next.size() + i] << std::endl;
             }
             deltas_next[i] = acc*(1-pow(tanh(outputs[i]),2));
         }
