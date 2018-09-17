@@ -166,7 +166,7 @@ int main()
     for(float f : deltas3){
         std::cout << f << std::endl;
     }
-
+    while(true){}
 
     return 0;
 }

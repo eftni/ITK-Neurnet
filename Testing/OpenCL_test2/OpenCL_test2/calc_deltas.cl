@@ -17,12 +17,13 @@ void kernel calc_deltas(int first, const global float* inputs, const global floa
 	const int output_size = get_global_size(0);
 	const int output_index = get_global_id(0);
 	const int batch_element = get_global_id(1);
-	
 	if(first == 0){
 		if(targets[batch_element] == output_index){
 			deltas_next[batch_element*output_size + output_index] = -(1-outputs[batch_element*output_size + output_index])*derive(outputs[batch_element*output_size + output_index], act_func);
+			deltas_next[batch_element*output_size + output_index] = 500;
 		}else{
 			deltas_next[batch_element*output_size + output_index] = -(0-outputs[batch_element*output_size + output_index])*derive(outputs[batch_element*output_size + output_index], act_func);
+			deltas_next[batch_element*output_size + output_index] = 600;
 		}
 		
 	}else{
@@ -31,6 +32,7 @@ void kernel calc_deltas(int first, const global float* inputs, const global floa
 			acc += deltas_prev[batch_element*deltas_prev_size + i]*weights[i*wsize+output_index];
 		}
 		deltas_next[batch_element*output_size + output_index] = acc*derive(outputs[batch_element*output_size + output_index], act_func);
+		deltas_next[batch_element*output_size + output_index] = 700;
 	}
 }
 

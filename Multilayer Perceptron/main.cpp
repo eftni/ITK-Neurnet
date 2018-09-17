@@ -27,7 +27,7 @@ int main()
     }*/
     start = std::chrono::high_resolution_clock::now();
     Neurnet net(layers, 0.2);
-    int epochs = 10;
+    int epochs = 2;
     for(int i = 1; i <= epochs; ++i){
         std::cout << "Epoch: " << i << std::endl;
         Dataset training(".\\Data\\train-images.idx3-ubyte", ".\\Data\\train-labels.idx1-ubyte");
