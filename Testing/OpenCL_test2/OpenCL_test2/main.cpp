@@ -34,6 +34,20 @@ class KernelFunctor
             c_queue = cl::CommandQueue({def_device_context, def_device});
             def_kernel = cl::Kernel(kernel_program, fname.substr(0, fname.length()-3).c_str());
         }
+        KernelFunctor(std::string fname, KernelFunctor k){
+            def_platform = k.def_platform;
+            def_device = k.def_device;
+            def_device_context = k.def_device_context;
+            std::string temp_code = fetch_kernel_code(fname);
+            kernel_code.push_back({temp_code.c_str(), temp_code.length()});
+            kernel_program = cl::Program({def_device_context, kernel_code});
+            if(kernel_program.build({def_device}) != CL_SUCCESS){
+                std::cout << "BUILD ERROR: " << kernel_program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(def_device) << std::endl;
+                exit(6);
+            }
+            c_queue = cl::CommandQueue({def_device_context, def_device});
+            def_kernel = cl::Kernel(kernel_program, fname.substr(0, fname.length()-3).c_str());
+        }
         /** Default destructor */
         virtual ~KernelFunctor(){}
 
@@ -96,12 +110,16 @@ void calc_deltas(bool first, int target, std::vector<float> outputs, std::vector
         }
     }else{
         for(int i = 0; i < deltas_next.size(); ++i){
+            std::cout << std::endl << "Delta index: " << i << std::endl << std::endl;
             float acc = 0;
             for(int j = 0; j < deltas_prev.size(); ++j){
                 acc += deltas_prev[j]*w[j*deltas_next.size() + i];
-                std::cout << "Deltas_prev: " << deltas_prev[j] << " Weight: " << w[j*deltas_next.size() + i] << std::endl;
+                //std::cout << "Deltas_prev: " << deltas_prev[j] << " Weight: " << w[j*deltas_next.size() + i] << std::endl;
             }
             deltas_next[i] = acc*(1-pow(tanh(outputs[i]),2));
+            std::cout << "Acc: " << acc << " Derivative: " << 1-pow(tanh(outputs[i]),2) << " Output index: " << i
+            << " Output: " << outputs[i] << std::endl;
+            std::cout << "-----------" << std::endl << std::endl;
         }
     }
 }
@@ -131,7 +149,7 @@ int main()
         std::cout << f << std::endl;
     }
     std::cout << std::endl;
-    KernelFunctor delta_kernel("calc_deltas.cl");
+    KernelFunctor delta_kernel("calc_deltas.cl", forprop_kernel);
     cl::Buffer delta_buffer = cl::Buffer(delta_kernel.get_context(), CL_MEM_READ_WRITE, sizeof(float)*output.size());
     cl::Buffer next_delta_buffer = cl::Buffer(delta_kernel.get_context(), CL_MEM_READ_WRITE, sizeof(float)*input.size());
     cl::Buffer target_buffer = cl::Buffer(delta_kernel.get_context(), CL_MEM_READ_WRITE, sizeof(float)*output.size());
@@ -141,7 +159,7 @@ int main()
     delta_kernel(cl::NullRange, cl::NDRange(3, 1), cl::NullRange, 0, input_buffer, act_output_buffer, w_buffer, 3, target_buffer, 2, dummy, 0, delta_buffer);
     std::vector<float> deltas(3,0);
     delta_kernel.c_queue.enqueueReadBuffer(delta_buffer, CL_TRUE, 0, sizeof(float)*deltas.size(), &deltas[0]);
-    std::cout << "GPU deltas:" << std::endl;
+    std::cout << std::endl << "GPU deltas:" << std::endl;
     for(float f : deltas){
         std::cout << f << std::endl;
     }
@@ -153,7 +171,7 @@ int main()
         std::cout << f << std::endl;
     }
     std::cout << std::endl;
-    delta_kernel(cl::NullRange, cl::NDRange(5, 1), cl::NullRange, 1, input_buffer, act_output_buffer, w_buffer, 3, target_buffer, 2, delta_buffer, 3, next_delta_buffer);
+    delta_kernel(cl::NullRange, cl::NDRange(5, 1), cl::NullRange, 1, input_buffer, input_buffer, w_buffer, 3, target_buffer, 2, delta_buffer, 3, next_delta_buffer);
     std::vector<float> next_deltas(5,0);
     delta_kernel.c_queue.enqueueReadBuffer(next_delta_buffer, CL_TRUE, 0, sizeof(float)*next_deltas.size(), &next_deltas[0]);
     std::cout << "GPU deltas:" << std::endl;
@@ -167,7 +185,5 @@ int main()
     for(float f : deltas3){
         std::cout << f << std::endl;
     }
-
-
     return 0;
 }

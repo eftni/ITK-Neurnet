@@ -11,3 +11,9 @@
 	"fstream"
 	"math.h"
 
+1537173409 source:c:\users\niko\desktop\prog\neurnet\testing\opencl_test2\opencl_test2\main.cpp
+	<iostream>
+	<CL/cl2.hpp>
+	"fstream"
+	"math.h"
+
