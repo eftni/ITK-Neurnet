@@ -5,7 +5,7 @@
 	"fstream"
 	"math.h"
 
-1536780200 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\testing\opencl_test2\opencl_test2\main.cpp
+1537457970 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\testing\opencl_test2\opencl_test2\main.cpp
 	<iostream>
 	<CL/cl2.hpp>
 	"fstream"

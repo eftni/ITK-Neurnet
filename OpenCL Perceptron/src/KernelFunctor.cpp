@@ -49,6 +49,21 @@ KernelFunctor::KernelFunctor(std::string fname)
     def_kernel.getWorkGroupInfo(def_device, CL_KERNEL_WORK_GROUP_SIZE, &max_work_group_size);
 }
 
+KernelFunctor::KernelFunctor(std::string fname, KernelFunctor k){
+    def_platform = k.def_platform;
+    def_device = k.def_device;
+    def_device_context = k.def_device_context;
+    std::string temp_code = fetch_kernel_code(fname);
+    kernel_code.push_back({temp_code.c_str(), temp_code.length()});
+    kernel_program = cl::Program({def_device_context, kernel_code});
+    if(kernel_program.build({def_device}) != CL_SUCCESS){
+        std::cout << "BUILD ERROR: " << kernel_program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(def_device) << std::endl;
+        exit(6);
+    }
+    c_queue = cl::CommandQueue({def_device_context, def_device});
+    def_kernel = cl::Kernel(kernel_program, fname.substr(0, fname.length()-3).c_str());
+}
+
 KernelFunctor::~KernelFunctor()
 {
     //dtor

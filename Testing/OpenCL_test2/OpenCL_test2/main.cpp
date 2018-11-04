@@ -110,16 +110,27 @@ void calc_deltas(bool first, int target, std::vector<float> outputs, std::vector
         }
     }else{
         for(int i = 0; i < deltas_next.size(); ++i){
-            std::cout << std::endl << "Delta index: " << i << std::endl << std::endl;
+            //std::cout << std::endl << "Delta index: " << i << std::endl << std::endl;
             float acc = 0;
             for(int j = 0; j < deltas_prev.size(); ++j){
                 acc += deltas_prev[j]*w[j*deltas_next.size() + i];
                 //std::cout << "Deltas_prev: " << deltas_prev[j] << " Weight: " << w[j*deltas_next.size() + i] << std::endl;
             }
             deltas_next[i] = acc*(1-pow(tanh(outputs[i]),2));
-            std::cout << "Acc: " << acc << " Derivative: " << 1-pow(tanh(outputs[i]),2) << " Output index: " << i
+            /*std::cout << "Acc: " << acc << " Derivative: " << 1-pow(tanh(outputs[i]),2) << " Output index: " << i
             << " Output: " << outputs[i] << std::endl;
-            std::cout << "-----------" << std::endl << std::endl;
+            std::cout << "-----------" << std::endl << std::endl;*/
+        }
+    }
+}
+
+void backprop(std::vector<float> outputs, std::vector<float> deltas, std::vector<float>& new_ws){
+    for(int i = 0; i < outputs.size(); ++i){
+        for(int j = 0; j < deltas.size(); ++j){
+            //new_ws[j*3 + i] = outputs[i] * deltas[j] * 1;
+            new_ws[j*5 + i] = outputs[i] * deltas[j] * 1;
+            std::cout << "Output: " << outputs[i]  << " Delta: " << deltas[j] << " Result: " << outputs[i] * deltas[j] << std::endl;
+            std::cout << "Index: " << j*3 + i << " Correct index? " << j*5 + i << std::endl;
         }
     }
 }
@@ -183,6 +194,22 @@ int main()
     calc_deltas(0, 3, input, w, deltas2, deltas3);
     std::cout << "CPU deltas:" << std::endl;
     for(float f : deltas3){
+        std::cout << f << std::endl;
+    }
+
+    KernelFunctor backprop_kernel("backprop.cl", forprop_kernel);
+    cl::Buffer w_update = cl::Buffer(backprop_kernel.get_context(), CL_MEM_READ_WRITE, sizeof(float)*w.size());
+    float learn_rate = 1;
+    backprop_kernel(cl::NullRange, cl::NDRange(5,3,1), cl::NullRange, delta_buffer, input_buffer, 5, w_update, 3, learn_rate);
+    std::vector<float> new_ws(15, 0);
+    backprop_kernel.c_queue.enqueueReadBuffer(w_update, CL_TRUE, 0, sizeof(float)*15, &new_ws[0]);
+    std::cout << "GPU backprop:" << std::endl;
+    for(float f : new_ws){
+        std::cout << f << std::endl;
+    }
+    backprop(input, deltas2, new_ws);
+    std::cout << "CPU backprop:" << std::endl;
+     for(float f : new_ws){
         std::cout << f << std::endl;
     }
     return 0;

@@ -155,7 +155,7 @@
 1529106596 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\mtlperv2\\matrixmath.h
 	"math.h"
 
-1531651839 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\multilayer perceptron\main.cpp
+1541373085 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\multilayer perceptron\main.cpp
 	<iostream>
 	"Dataset.h"
 	"Neurnet.h"
@@ -164,7 +164,7 @@
 	"math.h"
 	"chrono"
 
-1531651443 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\multilayer perceptron\include\dataset.h
+1531647843 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\multilayer perceptron\include\dataset.h
 	"vector"
 	"utility"
 	"stdint.h"
@@ -172,7 +172,7 @@
 	"stdlib.h"
 	"iostream"
 
-1532514524 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\multilayer perceptron\include\neurnet.h
+1537460699 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\multilayer perceptron\include\neurnet.h
 	"vector"
 	"functional"
 	"random"
@@ -180,20 +180,20 @@
 	"Dataset.h"
 	"Layer.h"
 
-1531651429 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\multilayer perceptron\include\layer.h
+1531647829 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\multilayer perceptron\include\layer.h
 	"functional"
 	"math.h"
 
-1531651443 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\multilayer perceptron\src\dataset.cpp
+1531647843 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\multilayer perceptron\src\dataset.cpp
 	"Dataset.h"
 
-1531651429 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\multilayer perceptron\src\layer.cpp
+1531647829 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\multilayer perceptron\src\layer.cpp
 	"Layer.h"
 	"utility"
 	"iostream"
 	"stdlib.h"
 
-1534434922 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\multilayer perceptron\src\neurnet.cpp
+1541373132 source:c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\multilayer perceptron\src\neurnet.cpp
 	"Neurnet.h"
 	"random"
 	"iostream"
@@ -205,6 +205,6 @@
 	"fstream"
 	"sstream"
 
-1532518358 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\multilayer perceptron\\matrixmath.h
+1541350353 c:\users\niko\desktop\neurnet\multilayer perceptron v1\mtlperv1\multilayer perceptron\\matrixmath.h
 	"math.h"
 

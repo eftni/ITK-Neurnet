@@ -37,7 +37,8 @@ std::function<float()> get_randgen(std::vector<std::random_device::result_type>&
     if(seeds == std::vector<std::random_device::result_type>(8,0)){
         for(int i = 0; i <= 7; ++i){    //RANDOM DEVICE IMPLEMENTED INCORRECTLY: USE BOOST
             //seeds[i] = r();
-            seeds[i] = rand();
+            //seeds[i] = rand();
+            seeds[i] = i; //DEBUG - REMOVE AFTER TESTING
             //std::cout << seeds[i] << std::endl;
         }
     }
@@ -56,7 +57,8 @@ biases(layers.size(), std::vector<float>(1,0)),
 n_layers(layers),
 hit(0),
 miss(0),
-logfile("Log001.txt")
+logfile("Log001.txt"),
+testing("Testing.txt")
 {
     std::function<float()> randgen = get_randgen(randgen_seeds);
     std::cout << "Generating weights" << std::endl;
@@ -82,28 +84,55 @@ Neurnet::~Neurnet()
     //dtor
 }
 
+template<typename T>
+std::ostream& operator<<(std::ostream& out, std::vector<T> v){
+    for(T t : v){
+        out << t << ' ';
+    }
+    /*for(T t : v){
+        out << (t > 0) ? 1 : 0 << ' ';
+    }*/
+    return out;
+
+}
+
 std::pair<std::vector<std::vector<float>>, std::vector<std::vector<float>>> Neurnet::forprop(std::vector<std::vector<uint8_t>> image){
     std::vector<float> temp = mat_to_row(image);
+    /*for(size_t i = 0; i < 28; ++i){
+        for(size_t j = 0; j < 28; ++j){
+            testing << image[j][i] << ' ';
+        }
+        testing << std::endl;
+    }
+    exit(1);*/
     std::pair<std::vector<std::vector<float>>,std::vector<std::vector<float>>> ins_outs; //Pair of inputs and outputs for every neuron
     std::vector<std::vector<float>> inputs;
     std::vector<std::vector<float>> outputs;
     temp = temp/255; //Input normalization
     //temp += biases[0];
     inputs.push_back(temp);
+    //testing << "Raw: " << temp << std::endl;
+    //exit(1);
     activate_choice(temp, n_layers[0].activator);
+    //testing << "Act: " << temp << std::endl;
     outputs.push_back(temp);
     for(size_t i = 0; i < weights.size(); ++i){
         temp = matrix_mult(temp, weights[i]);
         //temp += biases[i+1];
         inputs.push_back(temp);
+        testing << "Raw: " << temp << std::endl;
         activate_choice(temp, n_layers[i+1].activator);
         outputs.push_back(temp);
+        //testing << "Act: " << temp << std::endl;
     }
+    //testing << std::endl;
     ins_outs = {inputs, outputs};
     return ins_outs;
 }
 
 std::vector<std::vector<float>> Neurnet::calc_deltas(std::vector<float> target, const std::pair<std::vector<std::vector<float>>, std::vector<std::vector<float>>>& ins_outs){
+    testing << std::endl;
+    testing << "Deltas: " << std::endl;
     std::vector<std::vector<float>> deltas(ins_outs.second.size(), std::vector<float>(1,0));
     for(int i = ins_outs.second.size()-1; i >= 1; --i){ //Check for validity - may not need first layer deltas
         std::function<float(float)> derivative = derivative_choice(n_layers[i].activator);
@@ -112,6 +141,7 @@ std::vector<std::vector<float>> Neurnet::calc_deltas(std::vector<float> target, 
             for(size_t j = 0; j < ins_outs.second[i].size(); ++j){
                 layer_deltas[j] = -(target[j]-ins_outs.second[i][j])*derive(derivative, ins_outs.second[i][j]); //Review - derivative using outputs
             }
+            testing << layer_deltas << std::endl;
             deltas[i] = layer_deltas;
         }else{
             std::vector<float> layer_deltas(ins_outs.second[i].size(), 0);
@@ -122,6 +152,7 @@ std::vector<std::vector<float>> Neurnet::calc_deltas(std::vector<float> target, 
                 }
                 layer_deltas[j] = sumdelta*derive(derivative, ins_outs.second[i][j]);
             }
+            testing << layer_deltas << std::endl;
             deltas[i] = layer_deltas;
         }
     }
@@ -192,6 +223,7 @@ void Neurnet::single_pass(uint8_t label, std::vector<std::vector<uint8_t>> image
 }
 
 float Neurnet::train_pass(uint8_t label, std::vector<std::vector<uint8_t>> image, std::vector<std::vector<std::vector<float>>>& weights_update, std::vector<std::vector<float>>& bias_update){
+    testing << "Forprop: " << std::endl;
     const std::pair<std::vector<std::vector<float>>, std::vector<std::vector<float>>>& ins_outs = forprop(image);
     std::vector<float> target = gen_target(10, label);
     backprop(target, ins_outs, weights_update, bias_update);

@@ -11,7 +11,7 @@ std::vector<float> mat_to_row(std::vector<std::vector<uint8_t>> mat){ //Modify f
     std::vector<float> temp(mat.size()*mat[0].size(),0);
     for(size_t i = 0; i < mat.size(); ++i){
         for(size_t j = 0; j < mat[i].size(); ++j){
-            temp[(i*mat.size() + j)] = mat[i][j];
+            temp[(i*mat.size() + j)] = mat[j][i];
         }
     }
     return temp;

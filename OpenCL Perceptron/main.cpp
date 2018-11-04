@@ -11,13 +11,13 @@ int main()
 {
     auto start = std::chrono::high_resolution_clock::now();
     std::vector<Layer> layers;
-    layers.push_back(Layer(784, hyp_tan));
+    layers.push_back(Layer(784, identity));
     layers.push_back(Layer(16, hyp_tan));
     layers.push_back(Layer(16, hyp_tan));
     layers.push_back(Layer(10, hyp_tan));
     KernelFunctor forprop_kernel("forprop.cl");
-    KernelFunctor delta_kernel("calc_deltas.cl");
-    KernelFunctor backprop_kernel("backprop.cl");
+    KernelFunctor delta_kernel("calc_deltas.cl", forprop_kernel);
+    KernelFunctor backprop_kernel("backprop.cl", forprop_kernel);
     /*while(true){
         Neurnet net(layers, 0.2);
         int epochs = 10;
@@ -30,8 +30,8 @@ int main()
         net.test_net(testing);
     }*/
     start = std::chrono::high_resolution_clock::now();
-    Neurnet net(layers, 0.2, 1000, forprop_kernel, delta_kernel, backprop_kernel);
-    int epochs = 10;
+    Neurnet net(layers, 0, 1000, forprop_kernel, delta_kernel, backprop_kernel);
+    int epochs = 5;
     for(int i = 1; i <= epochs; ++i){
         std::cout << "Epoch: " << i << std::endl;
         Dataset training(".\\Data\\train-images.idx3-ubyte", ".\\Data\\train-labels.idx1-ubyte");

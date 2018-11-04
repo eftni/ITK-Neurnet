@@ -34,7 +34,7 @@ index(0)
         std::cout << "Error: File sizes don't match" << std::endl;
         exit(1);
     }
-    load_one();
+    //load_one();
     index = 1;
 }
 
@@ -61,6 +61,7 @@ void Dataset::load_one(){
 
 std::pair<std::vector<uint8_t>, std::vector<uint8_t>> Dataset::load_batch(size_t batch_size){
     std::pair<std::vector<uint8_t>, std::vector<uint8_t>> im_lab; //Rewrite for float
+    std::ofstream testing("testing.txt");
     for(size_t i = 0; i < batch_size; ++i){
         ++index;
         for(size_t y = 0; y < sizey; ++y){
@@ -68,11 +69,15 @@ std::pair<std::vector<uint8_t>, std::vector<uint8_t>> Dataset::load_batch(size_t
                 uint8_t c = 0;
                 fin_im.read(reinterpret_cast<char *>(&c), sizeof(c));
                 im_lab.first.push_back(c);
+                //testing << c << ' ';
             }
+            testing << std::endl;
         }
         uint8_t c = 0;
         fin_lab.read(reinterpret_cast<char *>(&c), sizeof(c));
         im_lab.second.push_back(c);
+        //testing << (int)c << std::endl;
+        //if(i == 3) exit(1);
     }
     return im_lab;
 }

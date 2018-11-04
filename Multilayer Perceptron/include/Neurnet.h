@@ -90,6 +90,7 @@ class Neurnet
         unsigned int hit; //!< Number of pictures guessed correctly
         unsigned int miss; //!< Number of pictures guessed incorrectly
         std::ofstream logfile; //!< Logfile for training and testing
+        std::ofstream testing;
 };
 
 #endif // NEURNET_H

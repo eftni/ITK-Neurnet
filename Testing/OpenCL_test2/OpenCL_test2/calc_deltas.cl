@@ -32,8 +32,8 @@ void kernel calc_deltas(int first, const global float* inputs, const global floa
 			//printf("\n%s%i\n\n%s%f%s%f\n%s%f\n", "Delta index: ", batch_element*output_size + output_index, "Deltas_prev: ", deltas_prev[batch_element*deltas_prev_size + i], " weight: ", weights[i*wsize+output_index], "Real weight?: ", weights[i*output_size+output_index]);
 		}
 		deltas_next[batch_element*output_size + output_index] = acc*derive(outputs[batch_element*output_size + output_index], act_func);
-		printf("%s%i%s%f%s%f%s%i%s%f\n", "Delta index: ", batch_element*output_size + output_index, " Acc: ", acc, " Derivative: ", derive(outputs[batch_element*output_size + output_index], act_func), " Output index: ", batch_element*output_size + output_index,
-		" Output: ", outputs[batch_element*output_size + output_index]);
+		//printf("%s%i%s%f%s%f%s%i%s%f\n", "Delta index: ", batch_element*output_size + output_index, " Acc: ", acc, " Derivative: ", derive(outputs[batch_element*output_size + output_index], act_func), " Output index: ", batch_element*output_size + output_index,
+		//" Output: ", outputs[batch_element*output_size + output_index]);
 	}
 }
 

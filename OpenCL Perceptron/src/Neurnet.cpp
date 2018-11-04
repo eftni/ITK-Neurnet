@@ -38,7 +38,8 @@ std::function<float()> get_randgen(std::vector<std::random_device::result_type>&
     if(seeds == std::vector<std::random_device::result_type>(8,0)){
         for(int i = 0; i <= 7; ++i){    //RANDOM DEVICE IMPLEMENTED INCORRECTLY: USE BOOST
             //seeds[i] = r();
-            seeds[i] = rand();
+            //seeds[i] = rand();
+            seeds[i] = i; //DEBUG - REMOVE AFTER TESTING
             //std::cout << seeds[i] << std::endl;
         }
     }

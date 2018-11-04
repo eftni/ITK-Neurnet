@@ -8,6 +8,7 @@ class KernelFunctor
         /** Default constructor */
         KernelFunctor();
         KernelFunctor(std::string fname);
+        KernelFunctor(std::string fname, KernelFunctor k);
         /** Default destructor */
         virtual ~KernelFunctor();
 
