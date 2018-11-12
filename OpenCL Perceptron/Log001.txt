@@ -1,1 +1,8 @@
 ------------Training error values------------
+------------Training error values------------
+------------Training error values------------
+------------Training error values------------
+------------Training error values------------
+------------Testing hit rate------------
+hit: 107 miss: 9893
+ratio: 1.07%

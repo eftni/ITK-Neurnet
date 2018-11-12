@@ -30,7 +30,7 @@ int main()
         net.test_net(testing);
     }*/
     start = std::chrono::high_resolution_clock::now();
-    Neurnet net(layers, 0, 1000, forprop_kernel, delta_kernel, backprop_kernel);
+    Neurnet net(layers, 10, 1000, forprop_kernel, delta_kernel, backprop_kernel);
     int epochs = 5;
     for(int i = 1; i <= epochs; ++i){
         std::cout << "Epoch: " << i << std::endl;

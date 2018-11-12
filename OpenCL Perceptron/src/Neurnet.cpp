@@ -112,11 +112,21 @@ void operator-=(std::vector<T>& w, const std::vector<T>& update){
 }
 
 template<typename T>
-std::vector<T> operator/(std::vector<T>& w, float d){
+std::vector<T> operator*(const std::vector<T>& w, const float& f){
+    std::vector<T> temp(w);
     for(size_t i = 0; i < w.size(); ++i){
-        w[i] = w[i]/d;
+        temp[i] = w[i]*f;
     }
-    return w;
+    return temp;
+}
+
+template<typename T>
+std::vector<T> operator/(const std::vector<T>& w, const float& f){
+    std::vector<T> temp(w);
+    for(size_t i = 0; i < w.size(); ++i){
+        temp[i] = w[i]/f;
+    }
+    return temp;
 }
 
 void Neurnet::forprop(std::vector<uint8_t> images){
@@ -234,7 +244,12 @@ void Neurnet::train_net(Dataset& training){
         for(size_t i = 0; i < w_update_buffers.size(); ++i){
             std::vector<float> w_update(weights[i].size(), 0);
             forprop_kernel.c_queue.enqueueReadBuffer(w_update_buffers[i], CL_TRUE, 0, sizeof(float)*w_update.size(), &w_update[0]);
-            weights[i] -= w_update/batch_size;
+            weights[i] -= (w_update/batch_size)*learning_rate;
+            /*for(size_t j = 0; j < weights[i].size(); ++j){
+                std::cout << weights[i][j] << ' ';
+            }
+            std::cout << std::endl;
+            std::cout << std::endl;*/
             forprop_kernel.c_queue.enqueueFillBuffer(w_update_buffers[i], &zero, 0, sizeof(float));
             forprop_kernel.c_queue.enqueueWriteBuffer(w_buffers[i], CL_FALSE, 0, sizeof(float)*weights[i].size(), &weights[i][0]);
         }
